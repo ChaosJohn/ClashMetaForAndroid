@@ -1,0 +1,48 @@
+app/src/main/java/com/github/kr328/clash/ProxyActivity.kt
+  h_baea9421f36f49 6,8,16-17,106-110,127-236
+core/src/main/cpp/main.c
+  h_baea9421f36f49 410-442
+core/src/main/golang/native/config.go
+  h_baea9421f36f49 86-100
+core/src/main/golang/native/config/groupoverride.go
+  h_baea9421f36f49 1-143
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 315-319
+core/src/main/golang/native/config/process.go
+  h_baea9421f36f49 23
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 10,252-276
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 56-59
+core/src/main/java/com/github/kr328/clash/core/model/ProxyGroupOverride.kt
+  h_baea9421f36f49 1-22
+design/src/main/java/com/github/kr328/clash/design/ProxyDesign.kt
+  h_baea9421f36f49 39,146-160
+design/src/main/java/com/github/kr328/clash/design/dialog/GroupOverrideFormDialog.kt
+  h_baea9421f36f49 1-277
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualGroupFormDialog.kt
+  h_baea9421f36f49 43-54,169,171-172,185-186,225-259,262-264,315-341
+design/src/main/res/layout/dialog_group_override_form.xml
+  h_baea9421f36f49 1-113
+design/src/main/res/layout/dialog_manual_group_form.xml
+  h_baea9421f36f49 63,81,115
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 313-316,339-341
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 404-407,430-432
+service/src/main/java/com/github/kr328/clash/service/ClashManager.kt
+  h_baea9421f36f49 91-114
+service/src/main/java/com/github/kr328/clash/service/remote/IClashManager.kt
+  h_baea9421f36f49 30-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c4c5b144ee35dd57200005e22ae321d27eda1c08",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

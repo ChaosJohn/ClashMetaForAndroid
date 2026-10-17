@@ -1,0 +1,16 @@
+design/src/main/res/drawable/ic_baseline_note_add.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/layout/design_profiles.xml
+  h_baea9421f36f49 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1375eae96659432d52e9739841221a6877fd3312",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

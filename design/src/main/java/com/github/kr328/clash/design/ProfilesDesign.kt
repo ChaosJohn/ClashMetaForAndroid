@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils
 import com.github.kr328.clash.design.adapter.ProfileAdapter
 import com.github.kr328.clash.design.databinding.DesignProfilesBinding
 import com.github.kr328.clash.design.databinding.DialogProfilesMenuBinding
+import com.github.kr328.clash.design.databinding.DialogManualConfigMenuBinding
 import com.github.kr328.clash.design.databinding.DialogProfileQrCodeBinding
 import com.github.kr328.clash.design.dialog.AppBottomSheetDialog
 import com.github.kr328.clash.design.ui.ToastDuration
@@ -36,6 +37,10 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
         data class Duplicate(val profile: Profile) : Request()
         data class ShareQrCode(val profile: Profile) : Request()
         data class Delete(val profile: Profile) : Request()
+        object ManualConfig : Request()
+        object ManualProxies : Request()
+        object ManualProxyGroups : Request()
+        object ManualRules : Request()
     }
 
     private val binding = DesignProfilesBinding
@@ -103,6 +108,38 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
         dialog.show()
     }
 
+    fun showManualConfigMenu() {
+        val dialog = AppBottomSheetDialog(context)
+
+        val binding = DialogManualConfigMenuBinding
+            .inflate(context.layoutInflater, dialog.window?.decorView as ViewGroup?, false)
+
+        binding.master = this
+        binding.self = dialog
+
+        dialog.setContentView(binding.root)
+        dialog.show()
+    }
+
+
+    fun requestManualProxies(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualProxies)
+    }
+
+    fun requestManualProxyGroups(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualProxyGroups)
+    }
+
+    fun requestManualRules(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualRules)
+    }
+
     fun requestUpdateAll() {
         allUpdating = true;
         changeUpdateAllButtonStatus()
@@ -116,6 +153,22 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
 
     fun requestCreate() {
         requests.trySend(Request.Create)
+    }
+
+    fun requestManualConfig() {
+        requests.trySend(Request.ManualConfig)
+    }
+
+    fun requestManualProxies() {
+        requests.trySend(Request.ManualProxies)
+    }
+
+    fun requestManualProxyGroups() {
+        requests.trySend(Request.ManualProxyGroups)
+    }
+
+    fun requestManualRules() {
+        requests.trySend(Request.ManualRules)
     }
 
     private fun requestActive(profile: Profile) {

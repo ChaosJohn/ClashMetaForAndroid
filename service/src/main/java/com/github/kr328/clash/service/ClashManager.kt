@@ -68,6 +68,22 @@ class ClashManager(private val context: Context) : IClashManager,
         Clash.clearOverride(slot)
     }
 
+    override fun queryManualConfig(): ManualConfig {
+        return Clash.queryManualConfig()
+    }
+
+    override fun patchManualConfig(configuration: ManualConfig) {
+        Clash.patchManualConfig(configuration)
+
+        context.sendOverrideChanged()
+    }
+
+    override fun clearManualConfig() {
+        Clash.clearManualConfig()
+
+        context.sendOverrideChanged()
+    }
+
     override suspend fun healthCheck(group: String) {
         return Clash.healthCheck(group).await()
     }

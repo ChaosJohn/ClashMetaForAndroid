@@ -77,6 +77,14 @@ class ProfilesActivity : BaseActivity<ProfilesDesign>() {
                         }
                         is ProfilesDesign.Request.ShareQrCode ->
                             design.showProfileQrCode(it.profile)
+                        ProfilesDesign.Request.ManualConfig ->
+                            design.showManualConfigMenu()
+                        ProfilesDesign.Request.ManualProxies ->
+                            startActivity(ManualProxiesActivity::class.intent)
+                        ProfilesDesign.Request.ManualProxyGroups ->
+                            startActivity(ManualProxyGroupsActivity::class.intent)
+                        ProfilesDesign.Request.ManualRules ->
+                            startActivity(ManualRulesActivity::class.intent)
                     }
                 }
                 if (activityStarted) {

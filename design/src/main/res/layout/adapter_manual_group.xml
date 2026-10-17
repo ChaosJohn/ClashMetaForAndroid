@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="group"
+            type="com.github.kr328.clash.core.model.ManualProxyGroup" />
+        <variable
+            name="clicked"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="menu"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/root_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="@dimen/item_min_height"
+        android:onClick="@{clicked}"
+        android:paddingStart="@dimen/item_header_margin"
+        android:paddingEnd="0dp">
+
+        <View
+            android:id="@+id/icon_view"
+            android:layout_width="@dimen/item_header_component_size"
+            android:layout_height="@dimen/item_header_component_size"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="@dimen/item_header_margin"
+            android:background="@drawable/ic_baseline_apps" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/menu_view"
+            android:layout_toEndOf="@id/icon_view"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/item_padding_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{group.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_text_margin"
+                android:text="@{group.proxies.isEmpty() ? &quot;&quot; : String.valueOf(group.proxies.size())}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/menu_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{menu}">
+
+            <View
+                android:layout_width="@dimen/item_tailing_component_size"
+                android:layout_height="@dimen/item_tailing_component_size"
+                android:layout_margin="@dimen/item_tailing_margin"
+                android:background="@drawable/ic_baseline_more_vert" />
+        </FrameLayout>
+    </RelativeLayout>
+</layout>

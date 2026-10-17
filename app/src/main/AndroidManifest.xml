@@ -183,6 +183,21 @@
             android:exported="false"
             android:label="@string/help" />
         <activity
+            android:name=".ManualProxiesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/manual_proxies" />
+        <activity
+            android:name=".ManualProxyGroupsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/manual_proxy_groups" />
+        <activity
+            android:name=".ManualRulesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/manual_rules" />
+        <activity
             android:name=".FilesActivity"
             android:configChanges="uiMode"
             android:exported="false"

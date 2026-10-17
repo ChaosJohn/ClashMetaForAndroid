@@ -66,6 +66,23 @@ func clearOverride(slot C.int) {
 	config.ClearOverride(config.OverrideSlot(slot))
 }
 
+//export readManualConfig
+func readManualConfig() *C.char {
+	return C.CString(config.ReadManualConfig())
+}
+
+//export writeManualConfig
+func writeManualConfig(content C.c_string) {
+	c := C.GoString(content)
+
+	config.WriteManualConfig(c)
+}
+
+//export clearManualConfig
+func clearManualConfig() {
+	config.ClearManualConfig()
+}
+
 //export setAgeSecretKey
 func setAgeSecretKey(key C.c_string) {
 	if key == nil {

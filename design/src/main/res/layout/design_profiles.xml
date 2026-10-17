@@ -63,6 +63,21 @@
                 </FrameLayout>
 
                 <ImageView
+                    android:id="@+id/manual_config_view"
+                    android:layout_width="@dimen/item_tailing_component_size"
+                    android:layout_height="@dimen/item_tailing_component_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/add_view"
+                    android:layout_marginStart="@dimen/item_tailing_margin"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@string/manual_config"
+                    android:focusable="true"
+                    android:onClick="@{() -> self.requestManualConfig()}"
+                    android:padding="@dimen/toolbar_image_action_padding"
+                    android:src="@drawable/ic_baseline_archive" />
+
+                <ImageView
                     android:id="@+id/add_view"
                     android:layout_width="@dimen/item_tailing_component_size"
                     android:layout_height="@dimen/item_tailing_component_size"

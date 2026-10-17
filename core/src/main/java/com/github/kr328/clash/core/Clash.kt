@@ -211,6 +211,36 @@ object Clash {
         Bridge.nativeClearOverride(slot.ordinal)
     }
 
+    private val ManualConfigJson = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+        explicitNulls = true
+    }
+
+    fun queryManualConfig(): ManualConfig {
+        return try {
+            ManualConfigJson.decodeFromString(
+                ManualConfig.serializer(),
+                Bridge.nativeReadManualConfig()
+            )
+        } catch (e: Exception) {
+            ManualConfig()
+        }
+    }
+
+    fun patchManualConfig(configuration: ManualConfig) {
+        Bridge.nativeWriteManualConfig(
+            ManualConfigJson.encodeToString(
+                ManualConfig.serializer(),
+                configuration
+            )
+        )
+    }
+
+    fun clearManualConfig() {
+        Bridge.nativeClearManualConfig()
+    }
+
     fun queryConfiguration(): UiConfiguration {
         return Json.Default.decodeFromString(
             UiConfiguration.serializer(),

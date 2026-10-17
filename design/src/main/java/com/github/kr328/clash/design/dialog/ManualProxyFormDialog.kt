@@ -1,17 +1,27 @@
 package com.github.kr328.clash.design.dialog
 
 import android.content.Context
+import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import com.github.kr328.clash.core.model.ManualProxy
 import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.databinding.DialogManualProxyFormBinding
 import com.github.kr328.clash.design.util.layoutInflater
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.put
 
 /**
- * Modal form for adding / editing a manually defined Shadowsocks proxy.
+ * Modal form for adding / editing a manually defined proxy.
  *
- * Returns the resulting [ManualProxy] through [show], or null when cancelled.
+ * Supported types: ss (cipher + password) and vless (uuid + transport
+ * options). Fields not covered by the common form are carried through
+ * [ManualProxy.extras] verbatim, so adding further protocol types only
+ * needs form fields, not model changes.
  */
 class ManualProxyFormDialog(
     private val context: Context,
@@ -19,6 +29,19 @@ class ManualProxyFormDialog(
     private val initial: ManualProxy?,
     private val existingNames: Set<String>,
 ) {
+    companion object {
+        private const val TYPE_SS = "ss"
+        private const val TYPE_VLESS = "vless"
+
+        private val TYPES = listOf(TYPE_SS, TYPE_VLESS)
+
+        private val FINGERPRINTS = listOf("chrome", "firefox", "safari", "ios", "android", "edge", "random")
+        private val NETWORKS = listOf("tcp", "ws")
+
+        private fun JsonElement?.asStringOrNull(): String =
+            (this as? JsonPrimitive)?.content.orEmpty()
+    }
+
     private val initialName = initial?.name.orEmpty()
 
     private val binding = DialogManualProxyFormBinding
@@ -30,6 +53,25 @@ class ManualProxyFormDialog(
     private var password: String = initial?.password.orEmpty()
     private var cipher: String = initial?.cipher ?: "aes-256-gcm"
     private var udp: Boolean? = initial?.udp
+    private var type: String = initial?.type?.takeIf { it in TYPES } ?: TYPE_SS
+    private var extras: Map<String, JsonElement> = initial?.extras ?: emptyMap()
+
+    private val fromExtras: Map<String, String> by lazy {
+        val wsOpts = extras["ws-opts"]?.let { runCatching { it.jsonObject }.getOrNull() }
+        val wsHeaders = wsOpts?.get("headers")?.let { runCatching { it.jsonObject }.getOrNull() }
+
+        buildMap {
+            extras["uuid"]?.let { put("uuid", it.asStringOrNull()) }
+            if (extras["tls"]?.asStringOrNull() == "true") {
+                put("tls", "true")
+            }
+            extras["network"]?.let { put("network", it.asStringOrNull()) }
+            extras["servername"]?.let { put("servername", it.asStringOrNull()) }
+            extras["client-fingerprint"]?.let { put("client-fingerprint", it.asStringOrNull()) }
+            wsOpts?.get("path")?.let { put("ws-path", it.asStringOrNull()) }
+            wsHeaders?.get("Host")?.let { put("ws-host", it.asStringOrNull()) }
+        }.filterValues { it.isNotEmpty() }
+    }
 
     private fun validate(): Boolean {
         var valid = true
@@ -38,6 +80,7 @@ class ManualProxyFormDialog(
         binding.serverLayout.error = null
         binding.portLayout.error = null
         binding.passwordLayout.error = null
+        binding.uuidLayout.error = null
 
         name = binding.nameField.text?.toString()?.trim().orEmpty()
         server = binding.serverField.text?.toString()?.trim().orEmpty()
@@ -62,8 +105,13 @@ class ManualProxyFormDialog(
             valid = false
         }
 
-        if (password.isEmpty()) {
+        if (type == TYPE_SS && password.isEmpty()) {
             binding.passwordLayout.error = context.getString(R.string.manual_error_password_required)
+            valid = false
+        }
+
+        if (type == TYPE_VLESS && binding.uuidField.text.isNullOrBlank()) {
+            binding.uuidLayout.error = context.getString(R.string.manual_error_uuid_required)
             valid = false
         }
 
@@ -74,14 +122,70 @@ class ManualProxyFormDialog(
     }
 
     private fun build(): ManualProxy {
+        val builtExtras = if (type == TYPE_VLESS) {
+            buildJsonObject {
+                binding.uuidField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    put("uuid", it)
+                }
+                if (binding.tlsSwitch.isChecked) {
+                    put("tls", true)
+                }
+                binding.networkField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    put("network", it)
+                }
+                binding.servernameField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    put("servername", it)
+                }
+                binding.fingerprintField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    put("client-fingerprint", it)
+                }
+
+                val wsPath = binding.wsPathField.text?.toString()?.trim().orEmpty()
+                val wsHost = binding.wsHostField.text?.toString()?.trim().orEmpty()
+
+                if (wsPath.isNotEmpty() || wsHost.isNotEmpty()) {
+                    put("ws-opts", buildJsonObject {
+                        if (wsPath.isNotEmpty()) {
+                            put("path", wsPath)
+                        }
+                        if (wsHost.isNotEmpty()) {
+                            put("headers", buildJsonObject {
+                                put("Host", wsHost)
+                            })
+                        }
+                    })
+                }
+            }
+        } else {
+            null
+        }
+
         return (initial ?: ManualProxy()).apply {
             this.name = this@ManualProxyFormDialog.name
+            this.type = this@ManualProxyFormDialog.type
             this.server = this@ManualProxyFormDialog.server
             this.port = this@ManualProxyFormDialog.port
             this.password = this@ManualProxyFormDialog.password
             this.cipher = this@ManualProxyFormDialog.cipher
             this.udp = this@ManualProxyFormDialog.udp
+
+            this.extras = builtExtras ?: emptyMap()
         }
+    }
+
+    private fun applyTypeVisibility() {
+        val vless = type == TYPE_VLESS
+
+        binding.passwordLayout.isVisible = !vless
+        binding.cipherLayout.isVisible = !vless
+        binding.uuidLayout.isVisible = vless
+        binding.tlsSwitch.isVisible = vless
+        binding.networkLayout.isVisible = vless
+
+        binding.servernameLayout.isVisible = vless && binding.tlsSwitch.isChecked
+        binding.fingerprintLayout.isVisible = vless && binding.tlsSwitch.isChecked
+        binding.wsPathLayout.isVisible = vless && binding.networkField.text?.toString() == "ws"
+        binding.wsHostLayout.isVisible = vless && binding.networkField.text?.toString() == "ws"
     }
 
     fun show(onResult: (ManualProxy?) -> Unit) {
@@ -97,6 +201,19 @@ class ManualProxyFormDialog(
             .create()
 
         dialog.setOnShowListener {
+            binding.typeField.setAdapter(
+                ArrayAdapter(
+                    context,
+                    android.R.layout.simple_list_item_1,
+                    TYPES
+                )
+            )
+            binding.typeField.setText(type, false)
+            binding.typeField.setOnItemClickListener { _, _, position, _ ->
+                type = TYPES[position]
+                applyTypeVisibility()
+            }
+
             binding.cipherField.setAdapter(
                 ArrayAdapter(
                     context,
@@ -104,6 +221,29 @@ class ManualProxyFormDialog(
                     ciphers
                 )
             )
+
+            binding.networkField.setAdapter(
+                ArrayAdapter(
+                    context,
+                    android.R.layout.simple_list_item_1,
+                    NETWORKS
+                )
+            )
+            binding.networkField.setOnItemClickListener { _, _, _, _ ->
+                applyTypeVisibility()
+            }
+
+            binding.fingerprintField.setAdapter(
+                ArrayAdapter(
+                    context,
+                    android.R.layout.simple_dropdown_item_1line,
+                    FINGERPRINTS
+                )
+            )
+
+            binding.tlsSwitch.setOnCheckedChangeListener { _, _ ->
+                applyTypeVisibility()
+            }
 
             initial?.let { proxy ->
                 binding.nameField.setText(proxy.name)
@@ -114,10 +254,22 @@ class ManualProxyFormDialog(
                 binding.passwordField.setText(proxy.password)
                 binding.cipherField.setText(proxy.cipher, false)
                 binding.udpSwitch.isChecked = proxy.udp == true
+
+                if (type == TYPE_VLESS) {
+                    binding.uuidField.setText(fromExtras["uuid"])
+                    binding.tlsSwitch.isChecked = fromExtras["tls"] == "true"
+                    binding.networkField.setText(fromExtras["network"] ?: "tcp", false)
+                    binding.servernameField.setText(fromExtras["servername"])
+                    binding.fingerprintField.setText(fromExtras["client-fingerprint"], false)
+                    binding.wsPathField.setText(fromExtras["ws-path"])
+                    binding.wsHostField.setText(fromExtras["ws-host"])
+                }
             } ?: run {
                 binding.cipherField.setText("aes-256-gcm", false)
                 binding.udpSwitch.isChecked = true
             }
+
+            applyTypeVisibility()
 
             dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 if (validate()) {

@@ -340,4 +340,13 @@
     <string name="manual_group_strategy_consistent_hashing">consistent-hashing（同目标同节点）</string>
     <string name="manual_group_strategy_sticky_sessions">sticky-sessions（同源同节点）</string>
     <string name="manual_member_group">分组</string>
+    <string name="manual_proxy_type">类型</string>
+    <string name="manual_proxy_uuid">UUID</string>
+    <string name="manual_proxy_tls">TLS</string>
+    <string name="manual_proxy_network">传输层（network）</string>
+    <string name="manual_proxy_servername">SNI（servername）</string>
+    <string name="manual_proxy_fingerprint">客户端指纹（uTLS）</string>
+    <string name="manual_proxy_ws_path">WebSocket 路径</string>
+    <string name="manual_proxy_ws_host">WebSocket Host 头</string>
+    <string name="manual_error_uuid_required">UUID 不能为空</string>
 </resources>

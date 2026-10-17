@@ -431,4 +431,13 @@
     <string name="manual_group_strategy_consistent_hashing">consistent-hashing</string>
     <string name="manual_group_strategy_sticky_sessions">sticky-sessions</string>
     <string name="manual_member_group">Group</string>
+    <string name="manual_proxy_type">Type</string>
+    <string name="manual_proxy_uuid">UUID</string>
+    <string name="manual_proxy_tls">TLS</string>
+    <string name="manual_proxy_network">Transport (network)</string>
+    <string name="manual_proxy_servername">SNI (servername)</string>
+    <string name="manual_proxy_fingerprint">Client fingerprint (uTLS)</string>
+    <string name="manual_proxy_ws_path">WebSocket path</string>
+    <string name="manual_proxy_ws_host">WebSocket Host header</string>
+    <string name="manual_error_uuid_required">UUID is required</string>
 </resources>

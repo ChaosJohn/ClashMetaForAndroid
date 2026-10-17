@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.github.kr328.clash.core.util.Parcelizer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class ManualProxy(
@@ -28,6 +29,15 @@ data class ManualProxy(
 
     @SerialName("udp")
     var udp: Boolean? = null,
+
+    /**
+     * Type-specific mihomo proxy fields not covered by the common form
+     * fields, keyed by config key (e.g. "uuid", "ws-opts"). Values hold
+     * raw JSON; the Go merger expands them into the generated proxy
+     * mapping and strips this key.
+     */
+    @SerialName("extras")
+    var extras: Map<String, JsonElement> = emptyMap(),
 ) : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         Parcelizer.encodeToParcel(serializer(), parcel, this)

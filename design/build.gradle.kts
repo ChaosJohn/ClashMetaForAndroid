@@ -19,4 +19,5 @@ dependencies {
     implementation(libs.androidx.viewpager)
     implementation(libs.google.material)
     implementation(libs.zxing.core)
+    implementation(libs.kotlin.serialization.json)
 }

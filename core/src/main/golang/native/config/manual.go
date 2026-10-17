@@ -80,6 +80,38 @@ func nameOfMapping(m map[string]any) string {
 	return ""
 }
 
+// expandExtras merges each proxy's "extras" object into the proxy mapping
+// and strips the key. Extras carry type-specific mihomo fields (e.g. uuid,
+// ws-opts for vless) produced by the manual proxy form; values are already
+// decoded JSON, so they are inserted as-is.
+func expandExtras(proxies []map[string]any) []map[string]any {
+	expanded := make([]map[string]any, 0, len(proxies))
+
+	for _, p := range proxies {
+		raw, ok := p["extras"]
+		if !ok {
+			expanded = append(expanded, p)
+			continue
+		}
+
+		delete(p, "extras")
+
+		if extras, ok := raw.(map[string]any); ok {
+			for k, v := range extras {
+				if _, exists := p[k]; !exists {
+					p[k] = v
+				}
+			}
+		} else if raw != nil {
+			log.Warnln("Apply manual config: ignored malformed extras on proxy `%s`", nameOfMapping(p))
+		}
+
+		expanded = append(expanded, p)
+	}
+
+	return expanded
+}
+
 // patchManualConfig merges the stored manual config into the raw config.
 //
 // - manual proxies and proxy groups are appended, entries with a duplicate
@@ -100,6 +132,19 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 
 	// merge proxies
 	if len(manual.Proxies) > 0 {
+		manual.Proxies = expandExtras(manual.Proxies)
+
+		// protocols without cipher/password serialize the ss form defaults
+		// as empty strings; drop the leftovers so the mapping stays clean
+		for _, p := range manual.Proxies {
+			if s, _ := p["cipher"].(string); s == "" {
+				delete(p, "cipher")
+			}
+			if s, _ := p["password"].(string); s == "" {
+				delete(p, "password")
+			}
+		}
+
 		manualNames := make(map[string]bool, len(manual.Proxies))
 		for _, p := range manual.Proxies {
 			if n := nameOfMapping(p); n != "" {

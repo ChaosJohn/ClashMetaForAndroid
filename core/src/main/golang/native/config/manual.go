@@ -145,6 +145,12 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 		return nil
 	}
 
+	// bookkeeping for injecting manual entries into well-known subscription
+	// selection groups (see the injection step below)
+	manualGroupNames := make(map[string]bool)
+	var survivingManualGroups []string
+	var manualProxyNames []string
+
 	// merge proxies
 	if len(manual.Proxies) > 0 {
 		manual.Proxies = expandExtras(manual.Proxies)
@@ -164,6 +170,7 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 		for _, p := range manual.Proxies {
 			if n := nameOfMapping(p); n != "" {
 				manualNames[n] = true
+				manualProxyNames = append(manualProxyNames, n)
 			}
 		}
 
@@ -181,7 +188,6 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 
 	// merge proxy groups
 	if len(manual.ProxyGroup) > 0 {
-		manualGroupNames := make(map[string]bool, len(manual.ProxyGroup))
 		for _, g := range manual.ProxyGroup {
 			if n := nameOfMapping(g); n != "" {
 				manualGroupNames[n] = true
@@ -284,6 +290,7 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 					valid[n] = true
 					delete(pendingNames, n)
 					sanitized = append(sanitized, g)
+					survivingManualGroups = append(survivingManualGroups, n)
 					progress = true
 				}
 			}
@@ -307,6 +314,28 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 			cfg.ProxyGroup = groups
 		}
 	}
+
+	// inject manual entries into well-known subscription selection groups so
+	// that users can pick them without editing the subscription. A group
+	// matches when its name contains one of the keywords below (case
+	// insensitive). Within each matched group the member order becomes:
+	// manual groups, remaining subscription groups, manual proxies,
+	// remaining subscription proxies; non-group/non-proxy members (DIRECT,
+	// REJECT, ...) keep their place at the tail.
+	// survivingManualGroups is in sanitizer resolution order, so the
+	// injection order is rebuilt from the configured order of the manual
+	// groups, restricted to the ones that survived sanitization.
+	live := make(map[string]bool, len(survivingManualGroups))
+	for _, n := range survivingManualGroups {
+		live[n] = true
+	}
+	injectionGroups := make([]string, 0, len(manual.ProxyGroup))
+	for _, g := range manual.ProxyGroup {
+		if n := nameOfMapping(g); live[n] {
+			injectionGroups = append(injectionGroups, n)
+		}
+	}
+	injectManualEntries(cfg, manualGroupNames, injectionGroups, manualProxyNames)
 
 	// merge rules at highest priority
 	if len(manual.Rules) > 0 {
@@ -358,6 +387,173 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 	}
 
 	return nil
+}
+
+// injectionKeywords lists lowercased substrings identifying the
+// subscription selection groups that receive manual entries.
+var injectionKeywords = []string{
+	"proxy",
+	"proxies",
+	"节点选择",
+	"手动选择",
+	"手动切换",
+	"final",
+	"漏网之鱼",
+	"兜底分流",
+}
+
+// matchesInjectionKeyword reports whether a group name contains any known
+// selection keyword, ignoring case and emoji/space decoration.
+func matchesInjectionKeyword(name string) bool {
+	norm := normalizeGroupName(name)
+	if norm == "" {
+		return false
+	}
+	for _, k := range injectionKeywords {
+		if strings.Contains(norm, k) {
+			return true
+		}
+	}
+	return false
+}
+
+// normalizeGroupName lowercases a name and strips characters that carry no
+// meaning for keyword matching: whitespace and anything outside letters,
+// digits and CJK ranges (emoji, symbols, decoration).
+func normalizeGroupName(name string) string {
+	var b strings.Builder
+	for _, r := range name {
+		switch {
+		case r >= 'a' && r <= 'z':
+			b.WriteRune(r)
+		case r >= 'A' && r <= 'Z':
+			b.WriteRune(r + 'a' - 'A')
+		case r >= '0' && r <= '9':
+			b.WriteRune(r)
+		case r >= 0x4E00 && r <= 0x9FFF: // CJK unified ideographs
+			b.WriteRune(r)
+		case r >= 0x3040 && r <= 0x30FF: // hiragana/katakana
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
+
+// injectManualEntries reorders the member list of matching subscription
+// groups so manual groups come first, then subscription groups, manual
+// proxies and subscription proxies; non-proxy members (DIRECT, REJECT,
+// policy names, ...) keep their relative order at the tail.
+func injectManualEntries(cfg *config.RawConfig, manualGroupNames map[string]bool, survivingManualGroups []string, manualProxyNames []string) {
+	if len(survivingManualGroups) == 0 && len(manualProxyNames) == 0 {
+		return
+	}
+
+	// name sets for classifying existing members
+	subGroupNames := make(map[string]bool, len(cfg.ProxyGroup))
+	subProxyNames := make(map[string]bool, len(cfg.Proxy))
+	for _, p := range cfg.Proxy {
+		if n := nameOfMapping(p); n != "" {
+			subProxyNames[n] = true
+		}
+	}
+	for _, g := range cfg.ProxyGroup {
+		if n := nameOfMapping(g); n != "" {
+			subGroupNames[n] = true
+		}
+	}
+	manualProxySet := make(map[string]bool, len(manualProxyNames))
+	for _, n := range manualProxyNames {
+		manualProxySet[n] = true
+	}
+
+	// manual groups no longer referenced by the injection (dropped by the
+	// sanitizer above) must not be injected
+	liveManualGroups := make(map[string]bool, len(survivingManualGroups))
+	for _, n := range survivingManualGroups {
+		liveManualGroups[n] = true
+	}
+
+	for _, g := range cfg.ProxyGroup {
+		name := nameOfMapping(g)
+		if manualGroupNames[name] || !matchesInjectionKeyword(name) {
+			continue
+		}
+
+		raw, _ := g["proxies"].([]any)
+		if len(raw) == 0 {
+			continue
+		}
+
+		var manualGroups, subGroups, manualProxies, subProxies, rest []any
+		seen := make(map[string]bool, len(raw))
+
+		// manual entries are injected at the front of their bucket; ones
+		// already referenced by the subscription keep that membership,
+		// everything else is added dynamically
+		for _, n := range survivingManualGroups {
+			if !seen[n] {
+				seen[n] = true
+				manualGroups = append(manualGroups, n)
+			}
+		}
+		for _, n := range manualProxyNames {
+			if !seen[n] {
+				seen[n] = true
+				manualProxies = append(manualProxies, n)
+			}
+		}
+
+		// existing members keep their relative order within their bucket
+		for _, m := range raw {
+			s, ok := m.(string)
+			if !ok || s == "" || seen[s] {
+				continue
+			}
+			seen[s] = true
+			switch {
+			case manualGroupNames[s] && liveManualGroups[s]:
+				manualGroups = append(manualGroups, s)
+			case manualGroupNames[s]:
+				// manual group was dropped by the sanitizer, skip
+			case subGroupNames[s]:
+				subGroups = append(subGroups, s)
+			case manualProxySet[s]:
+				manualProxies = append(manualProxies, s)
+			case subProxyNames[s]:
+				subProxies = append(subProxies, s)
+			default:
+				// DIRECT, REJECT, policy names, ... stay at the tail
+				rest = append(rest, s)
+			}
+		}
+
+		proxies := make([]any, 0, len(raw))
+		proxies = append(proxies, manualGroups...)
+		proxies = append(proxies, subGroups...)
+		proxies = append(proxies, manualProxies...)
+		proxies = append(proxies, subProxies...)
+		proxies = append(proxies, rest...)
+
+		if !sameStrings(proxies, raw) {
+			g["proxies"] = proxies
+		}
+	}
+}
+
+// sameStrings reports whether the raw member list equals the given string
+// slice element-wise.
+func sameStrings(raw []any, list []any) bool {
+	if len(raw) != len(list) {
+		return false
+	}
+	for i := range raw {
+		rs, ok1 := raw[i].(string)
+		ls, ok2 := list[i].(string)
+		if !ok1 || !ok2 || rs != ls {
+			return false
+		}
+	}
+	return true
 }
 
 // validDomain reports whether s is a plain hostname usable in a

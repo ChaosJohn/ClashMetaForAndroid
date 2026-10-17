@@ -141,22 +141,17 @@ class ProxyDesign(
 
             TabLayoutMediator(binding.tabLayoutView, binding.pagesView) { tab, index ->
                 tab.text = groupNames[index]
-            }.attach()
 
-            // long press a group tab to change the group type dynamically
-            binding.tabLayoutView.setOnLongClickListener { _ ->
-                val tab = binding.tabLayoutView.getTabAt(
-                    binding.tabLayoutView.selectedTabPosition
-                )
-
-                if (tab == null) {
-                    false
-                } else {
-                    requests.trySend(Request.OverrideGroupType(binding.pagesView.currentItem))
+                // long press an individual tab view to change the group
+                // type dynamically; a listener on the TabLayout itself is
+                // never reached because the tab view consumes long
+                // presses for its truncation tooltip
+                tab.view.setOnLongClickListener {
+                    requests.trySend(Request.OverrideGroupType(index))
 
                     true
                 }
-            }
+            }.attach()
 
             val initialPosition = groupNames.indexOf(uiStore.proxyLastGroup)
 

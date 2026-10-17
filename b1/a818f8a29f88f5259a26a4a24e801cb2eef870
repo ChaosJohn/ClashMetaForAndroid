@@ -1,0 +1,16 @@
+design/src/main/res/layout/dialog_group_override_form.xml
+  h_baea9421f36f49 33,51,85
+design/src/main/res/layout/dialog_manual_group_form.xml
+  h_baea9421f36f49 55,73,107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1a818f8a29f88f5259a26a4a24e801cb2eef870",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

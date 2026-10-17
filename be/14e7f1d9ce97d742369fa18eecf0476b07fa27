@@ -1,0 +1,16 @@
+app/src/main/java/com/github/kr328/clash/ManualProxiesActivity.kt
+  h_baea9421f36f49 21,27,46-51,88-89,108-109
+app/src/main/java/com/github/kr328/clash/ManualProxyGroupsActivity.kt
+  h_baea9421f36f49 21,27,46-51,95-96,117-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "be14e7f1d9ce97d742369fa18eecf0476b07fa27",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

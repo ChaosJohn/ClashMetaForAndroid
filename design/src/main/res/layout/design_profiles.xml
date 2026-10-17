@@ -91,7 +91,7 @@
                     android:focusable="true"
                     android:onClick="@{() -> self.requestCreate()}"
                     android:padding="@dimen/toolbar_image_action_padding"
-                    android:src="@drawable/ic_baseline_add" />
+                    android:src="@drawable/ic_baseline_note_add" />
 
             </RelativeLayout>
         </com.github.kr328.clash.design.view.ActivityBarLayout>

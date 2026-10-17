@@ -408,6 +408,39 @@ Java_com_github_kr328_clash_core_bridge_Bridge_nativeClearManualConfig(JNIEnv *e
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeReadGroupOverrides(JNIEnv *env, jobject thiz,
+                                                                        jstring profile_id) {
+    TRACE_METHOD();
+
+    scoped_string _profile_id = get_string(profile_id);
+    scoped_string response = readGroupOverrides(_profile_id);
+
+    return new_string(response);
+}
+
+JNIEXPORT void JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeWriteGroupOverrides(JNIEnv *env, jobject thiz,
+                                                                         jstring profile_id,
+                                                                         jstring content) {
+    TRACE_METHOD();
+
+    scoped_string _profile_id = get_string(profile_id);
+    scoped_string _content = get_string(content);
+
+    writeGroupOverrides(_profile_id, _content);
+}
+
+JNIEXPORT void JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeClearGroupOverrides(JNIEnv *env, jobject thiz,
+                                                                         jstring profile_id) {
+    TRACE_METHOD();
+
+    scoped_string _profile_id = get_string(profile_id);
+
+    clearGroupOverrides(_profile_id);
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeQueryConfiguration(JNIEnv *env, jobject thiz) {
     TRACE_METHOD();
 

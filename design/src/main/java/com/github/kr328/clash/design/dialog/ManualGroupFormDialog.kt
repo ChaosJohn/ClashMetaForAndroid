@@ -40,6 +40,18 @@ class ManualGroupFormDialog(
             "consistent-hashing",
             "sticky-sessions",
         )
+
+        private val TEST_URLS = listOf(
+            "https://www.gstatic.com/generate_204",
+            "http://www.gstatic.com/generate_204",
+            "https://cp.cloudflare.com/generate_204",
+            "http://cp.cloudflare.com/generate_204",
+            "https://connectivitycheck.platform.hicloud.com/generate_204",
+        )
+
+        private val INTERVALS = listOf("60", "300", "600", "1800", "3600")
+
+        private val TOLERANCES = listOf("0", "50", "100", "150", "300")
     }
 
     private val initialName = initial?.name.orEmpty()
@@ -154,10 +166,10 @@ class ManualGroupFormDialog(
         when (type) {
             TYPE_URL_TEST, TYPE_FALLBACK -> {
                 binding.urlField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
-                    options["url"] = it
+                    options["url"] = stripSuggestionDecoration(it, it)
                 }
-                binding.intervalField.text?.toString()?.trim()?.toIntOrNull()?.takeIf { it > 0 }?.let {
-                    options["interval"] = it.toString()
+                binding.intervalField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    options["interval"] = stripSuggestionDecoration(it, it)
                 }
             }
         }
@@ -170,8 +182,8 @@ class ManualGroupFormDialog(
                 }
             }
             TYPE_URL_TEST -> {
-                binding.toleranceField.text?.toString()?.trim()?.toIntOrNull()?.let {
-                    options["tolerance"] = it.toString()
+                binding.toleranceField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    options["tolerance"] = stripSuggestionDecoration(it, it)
                 }
             }
         }
@@ -210,11 +222,46 @@ class ManualGroupFormDialog(
             )
         )
 
+        // quick picks: tapping a suggestion fills the editable field
+        binding.urlField.setAdapter(
+            ArrayAdapter(
+                context,
+                android.R.layout.simple_list_item_1,
+                TEST_URLS.map { displayTestUrl(it) }
+            )
+        )
+        binding.urlField.setOnItemClickListener { _, _, position, _ ->
+            binding.urlField.setText(TEST_URLS[position], false)
+            binding.urlField.setSelection(TEST_URLS[position].length)
+        }
+
+        binding.intervalField.setAdapter(
+            ArrayAdapter(
+                context,
+                android.R.layout.simple_list_item_1,
+                INTERVALS.map { displayInterval(it) }
+            )
+        )
+        binding.intervalField.setOnItemClickListener { _, _, position, _ ->
+            binding.intervalField.setText(INTERVALS[position], false)
+        }
+
+        binding.toleranceField.setAdapter(
+            ArrayAdapter(
+                context,
+                android.R.layout.simple_list_item_1,
+                TOLERANCES.map { displayTolerance(it) }
+            )
+        )
+        binding.toleranceField.setOnItemClickListener { _, _, position, _ ->
+            binding.toleranceField.setText(TOLERANCES[position], false)
+        }
+
         initial?.options?.forEach { (key, value) ->
             when (key) {
-                "url" -> binding.urlField.setText(value)
-                "interval" -> binding.intervalField.setText(value)
-                "tolerance" -> binding.toleranceField.setText(value)
+                "url" -> binding.urlField.setText(displayTestUrl(value), false)
+                "interval" -> binding.intervalField.setText(displayInterval(value), false)
+                "tolerance" -> binding.toleranceField.setText(displayTolerance(value), false)
                 "strategy" -> binding.strategyField.setText(displayStrategy(value), false)
             }
         }
@@ -264,5 +311,32 @@ class ManualGroupFormDialog(
         "consistent-hashing" -> context.getString(R.string.manual_group_strategy_consistent_hashing)
         "sticky-sessions" -> context.getString(R.string.manual_group_strategy_sticky_sessions)
         else -> strategy
+    }
+
+    // suggestions show a localized recommendation marker, the raw value is
+    // restored on selection and on build()
+    private fun displayTestUrl(url: String): String = if (url == TEST_URLS[0])
+        context.getString(R.string.manual_suggest_url_gstatic)
+    else
+        url
+
+    private fun displayInterval(value: String): String = when (value) {
+        "300" -> context.getString(R.string.manual_suggest_interval_300)
+        else -> value
+    }
+
+    private fun displayTolerance(value: String): String = when (value) {
+        "50" -> context.getString(R.string.manual_suggest_tolerance_50)
+        else -> value
+    }
+
+    private fun stripSuggestionDecoration(text: String, raw: String): String {
+        // allow the decorated suggestion text itself to map back to raw
+        return when (text) {
+            context.getString(R.string.manual_suggest_url_gstatic) -> TEST_URLS[0]
+            context.getString(R.string.manual_suggest_interval_300) -> "300"
+            context.getString(R.string.manual_suggest_tolerance_50) -> "50"
+            else -> raw
+        }
     }
 }

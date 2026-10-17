@@ -7,6 +7,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -246,6 +247,31 @@ object Clash {
 
     fun clearManualConfig() {
         Bridge.nativeClearManualConfig()
+    }
+
+    /**
+     * Per-profile dynamic type overrides for subscription proxy groups,
+     * keyed by group name. Applied by the Go merger at load time.
+     */
+    fun queryGroupOverrides(profileId: String): Map<String, ProxyGroupOverride> {
+        return try {
+            ManualConfigJson.decodeFromString(
+                MapSerializer(String.serializer(), ProxyGroupOverride.serializer()),
+                Bridge.nativeReadGroupOverrides(profileId)
+            )
+        } catch (e: Exception) {
+            emptyMap()
+        }
+    }
+
+    fun patchGroupOverrides(profileId: String, overrides: Map<String, ProxyGroupOverride>) {
+        Bridge.nativeWriteGroupOverrides(
+            profileId,
+            ManualConfigJson.encodeToString(
+                MapSerializer(String.serializer(), ProxyGroupOverride.serializer()),
+                overrides
+            )
+        )
     }
 
     fun queryConfiguration(): UiConfiguration {

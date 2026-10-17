@@ -312,6 +312,11 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 			}
 			groups = append(groups, sanitized...)
 			cfg.ProxyGroup = groups
+
+			lastManualGroupNames = make(map[string]bool, len(survivingManualGroups))
+			for _, n := range survivingManualGroups {
+				lastManualGroupNames[n] = true
+			}
 		}
 	}
 

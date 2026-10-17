@@ -88,6 +88,30 @@ class ClashManager(private val context: Context) : IClashManager,
         context.sendOverrideChanged()
     }
 
+    override fun queryGroupOverrides(profileId: String): Map<String, Map<String, String>> {
+        return Clash.queryGroupOverrides(profileId).mapValues { (_, override) ->
+            buildMap {
+                put("type", override.type)
+                putAll(override.options)
+            }
+        }
+    }
+
+    override fun patchGroupOverrides(profileId: String, overrides: Map<String, Map<String, String>>) {
+        Clash.patchGroupOverrides(profileId, overrides.mapValues { (_, fields) ->
+            com.github.kr328.clash.core.model.ProxyGroupOverride(
+                type = fields["type"] ?: "select",
+                options = fields - "type",
+            )
+        })
+
+        context.sendOverrideChanged()
+    }
+
+    override fun queryActiveProfileId(): String {
+        return store.activeProfile?.toString() ?: ""
+    }
+
     override suspend fun healthCheck(group: String) {
         return Clash.healthCheck(group).await()
     }

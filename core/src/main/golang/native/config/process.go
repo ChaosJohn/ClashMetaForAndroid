@@ -20,6 +20,7 @@ var processors = []processor{
 	patchExternalController, // must before patchOverride, so we only apply ExternalController in Override settings
 	patchOverride,
 	patchManualConfig,
+	patchGroupOverrides, // after patchManualConfig: never double-patch manual groups
 	patchGeneral,
 	patchProfile,
 	patchDns,

@@ -27,5 +27,11 @@ interface IClashManager {
     fun patchManualConfig(configuration: ManualConfig)
     fun clearManualConfig()
 
+    fun queryGroupOverrides(profileId: String): Map<String, Map<String, String>>
+    fun patchGroupOverrides(profileId: String, overrides: Map<String, Map<String, String>>)
+
+    /** UUID string of the active profile, empty when none is active. */
+    fun queryActiveProfileId(): String
+
     fun setLogObserver(observer: ILogObserver?)
 }

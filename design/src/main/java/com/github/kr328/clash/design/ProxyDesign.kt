@@ -36,6 +36,7 @@ class ProxyDesign(
         data class Reload(val index: Int) : Request()
         data class Select(val index: Int, val name: String) : Request()
         data class UrlTest(val index: Int) : Request()
+        data class OverrideGroupType(val index: Int) : Request()
     }
 
     private val binding = DesignProxyBinding
@@ -141,6 +142,21 @@ class ProxyDesign(
             TabLayoutMediator(binding.tabLayoutView, binding.pagesView) { tab, index ->
                 tab.text = groupNames[index]
             }.attach()
+
+            // long press a group tab to change the group type dynamically
+            binding.tabLayoutView.setOnLongClickListener { _ ->
+                val tab = binding.tabLayoutView.getTabAt(
+                    binding.tabLayoutView.selectedTabPosition
+                )
+
+                if (tab == null) {
+                    false
+                } else {
+                    requests.trySend(Request.OverrideGroupType(binding.pagesView.currentItem))
+
+                    true
+                }
+            }
 
             val initialPosition = groupNames.indexOf(uiStore.proxyLastGroup)
 

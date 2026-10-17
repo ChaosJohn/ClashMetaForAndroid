@@ -83,6 +83,21 @@ func clearManualConfig() {
 	config.ClearManualConfig()
 }
 
+//export readGroupOverrides
+func readGroupOverrides(profileID C.c_string) *C.char {
+	return C.CString(config.ReadGroupOverrides(C.GoString(profileID)))
+}
+
+//export writeGroupOverrides
+func writeGroupOverrides(profileID, content C.c_string) {
+	config.WriteGroupOverrides(C.GoString(profileID), C.GoString(content))
+}
+
+//export clearGroupOverrides
+func clearGroupOverrides(profileID C.c_string) {
+	config.ClearGroupOverrides(C.GoString(profileID))
+}
+
 //export setAgeSecretKey
 func setAgeSecretKey(key C.c_string) {
 	if key == nil {

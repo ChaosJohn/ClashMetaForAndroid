@@ -53,6 +53,10 @@ object Bridge {
     external fun nativeWriteManualConfig(content: String)
     external fun nativeClearManualConfig()
 
+    external fun nativeReadGroupOverrides(profileId: String): String
+    external fun nativeWriteGroupOverrides(profileId: String, content: String)
+    external fun nativeClearGroupOverrides(profileId: String)
+
     external fun nativeQueryConfiguration(): String
     external fun nativeSubscribeLogcat(callback: LogcatInterface)
     external fun nativeCoreVersion(): String

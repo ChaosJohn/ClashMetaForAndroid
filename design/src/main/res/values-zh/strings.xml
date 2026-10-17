@@ -310,6 +310,10 @@
     <string name="manual_rule_target_direct">DIRECT（直连）</string>
     <string name="manual_rule_target_reject">REJECT（拒绝）</string>
     <string name="manual_error_name_required">名称不能为空</string>
+    <string name="manual_error_invalid_option">上方字段中有无效值</string>
+    <string name="override_group_title">修改 %1$s 的类型</string>
+    <string name="override_restore_default">恢复订阅默认</string>
+    <string name="override_applied_toast">分组类型已修改，正在重载配置</string>
     <string name="manual_error_server_required">服务器不能为空</string>
     <string name="manual_error_port_invalid">端口无效</string>
     <string name="manual_error_password_required">密码不能为空</string>
@@ -332,6 +336,9 @@
     <string name="manual_group_interval">测速间隔（秒）</string>
     <string name="manual_group_strategy">负载策略</string>
     <string name="manual_group_tolerance">切换容差（毫秒）</string>
+    <string name="manual_suggest_url_gstatic">https://www.gstatic.com/generate_204（推荐）</string>
+    <string name="manual_suggest_interval_300">300（推荐）</string>
+    <string name="manual_suggest_tolerance_50">50（推荐）</string>
     <string name="manual_group_type_select">select（手动选择）</string>
     <string name="manual_group_type_url_test">url-test（自动最低延迟）</string>
     <string name="manual_group_type_fallback">fallback（故障转移）</string>

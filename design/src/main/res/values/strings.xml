@@ -401,6 +401,10 @@
     <string name="manual_rule_target_direct">DIRECT</string>
     <string name="manual_rule_target_reject">REJECT</string>
     <string name="manual_error_name_required">Name is required</string>
+    <string name="manual_error_invalid_option">Invalid value in one of the fields above</string>
+    <string name="override_group_title">Change type of %1$s</string>
+    <string name="override_restore_default">Restore subscription default</string>
+    <string name="override_applied_toast">Group type changed, reloading profile</string>
     <string name="manual_error_server_required">Server is required</string>
     <string name="manual_error_port_invalid">Invalid port</string>
     <string name="manual_error_password_required">Password is required</string>
@@ -423,6 +427,9 @@
     <string name="manual_group_interval">Interval (seconds)</string>
     <string name="manual_group_strategy">Strategy</string>
     <string name="manual_group_tolerance">Tolerance (ms)</string>
+    <string name="manual_suggest_url_gstatic">https://www.gstatic.com/generate_204 (recommended)</string>
+    <string name="manual_suggest_interval_300">300 (recommended)</string>
+    <string name="manual_suggest_tolerance_50">50 (recommended)</string>
     <string name="manual_group_type_select">select (manually choose)</string>
     <string name="manual_group_type_url_test">url-test (lowest delay)</string>
     <string name="manual_group_type_fallback">fallback (failover)</string>

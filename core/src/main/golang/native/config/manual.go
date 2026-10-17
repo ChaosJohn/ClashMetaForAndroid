@@ -3,10 +3,12 @@ package config
 import (
 	"encoding/json"
 	"io"
+	"net"
 	"os"
 	"strings"
 
 	"github.com/metacubex/mihomo/config"
+	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/log"
 )
@@ -155,6 +157,33 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 		}
 
 		cfg.Rule = append(rules, cfg.Rule...)
+	}
+
+	// manual proxy server domains must never resolve to fake-ip, otherwise
+	// the ss dialer would connect to a fake address and time out. Only
+	// blacklist mode (the default) uses the filter to bypass fake-ip.
+	if len(manual.Proxies) > 0 &&
+		cfg.DNS.FakeIPFilterMode == C.FilterBlackList {
+		for _, p := range manual.Proxies {
+			server, _ := p["server"].(string)
+			server = strings.TrimSpace(server)
+			if server == "" || net.ParseIP(server) != nil {
+				continue
+			}
+
+			filter := "+" + server
+
+			exists := false
+			for _, f := range cfg.DNS.FakeIPFilter {
+				if f == filter {
+					exists = true
+					break
+				}
+			}
+			if !exists {
+				cfg.DNS.FakeIPFilter = append(cfg.DNS.FakeIPFilter, filter)
+			}
+		}
 	}
 
 	return nil

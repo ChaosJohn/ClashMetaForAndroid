@@ -11,6 +11,7 @@ import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.adapter.ManualMemberCheckAdapter
 import com.github.kr328.clash.design.databinding.DialogManualGroupFormBinding
 import com.github.kr328.clash.design.util.layoutInflater
+import com.github.kr328.clash.design.util.showSuggestionsOnTap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -256,6 +257,10 @@ class ManualGroupFormDialog(
         binding.toleranceField.setOnItemClickListener { _, _, position, _ ->
             binding.toleranceField.setText(TOLERANCES[position], false)
         }
+
+        binding.urlField.showSuggestionsOnTap()
+        binding.intervalField.showSuggestionsOnTap()
+        binding.toleranceField.showSuggestionsOnTap()
 
         initial?.options?.forEach { (key, value) ->
             when (key) {

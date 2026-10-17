@@ -8,6 +8,7 @@ import com.github.kr328.clash.core.model.ProxyGroupOverride
 import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.databinding.DialogGroupOverrideFormBinding
 import com.github.kr328.clash.design.util.layoutInflater
+import com.github.kr328.clash.design.util.showSuggestionsOnTap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -127,6 +128,11 @@ class GroupOverrideFormDialog(
                 TOLERANCES.map { displayTolerance(it) }
             )
         )
+
+        binding.urlField.showSuggestionsOnTap()
+        binding.intervalField.showSuggestionsOnTap()
+        binding.toleranceField.showSuggestionsOnTap()
+
         binding.toleranceField.setOnItemClickListener { _, _, position, _ ->
             binding.toleranceField.setText(TOLERANCES[position], false)
         }

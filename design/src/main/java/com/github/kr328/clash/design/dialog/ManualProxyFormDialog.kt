@@ -166,7 +166,9 @@ class ManualProxyFormDialog(
             emptyMap()
         }
 
-        return (initial ?: ManualProxy()).apply {
+        // never mutate the initial instance: it is still referenced by the
+        // list adapter and by the rename lookup in the activity
+        return (initial?.copy() ?: ManualProxy()).apply {
             this.name = this@ManualProxyFormDialog.name
             this.type = this@ManualProxyFormDialog.type
             this.server = this@ManualProxyFormDialog.server

@@ -72,7 +72,14 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
             val proxies = current.proxies.toMutableList()
 
             if (initial != null) {
-                val index = proxies.indexOfFirst { it.name == initial.name }
+                // match by name first; when the stored name differs (e.g.
+                // renamed elsewhere), fall back to the original position so
+                // a rename can never turn into an accidental add
+                var index = proxies.indexOfFirst { it.name == initial.name }
+
+                if (index < 0) {
+                    index = current.proxies.indexOfFirst { it.name == initial.name }
+                }
 
                 if (index >= 0) proxies[index] = result else proxies.add(result)
             } else {

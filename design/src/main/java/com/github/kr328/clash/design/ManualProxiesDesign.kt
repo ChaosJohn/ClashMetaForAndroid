@@ -32,7 +32,7 @@ class ManualProxiesDesign(context: Context) : Design<ManualProxiesDesign.Request
 
     suspend fun patchConfig(config: ManualConfig) {
         adapter.apply {
-            patchDataSet(this::proxies, config.proxies)
+            patchDataSet(this::proxies, config.proxies, id = ManualProxy::name)
         }
 
         empty = config.proxies.isEmpty()

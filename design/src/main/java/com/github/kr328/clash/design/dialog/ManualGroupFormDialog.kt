@@ -174,7 +174,9 @@ class ManualGroupFormDialog(
             }
         }
 
-        return (initial ?: ManualProxyGroup()).apply {
+        // never mutate the initial instance: it is still referenced by the
+        // list adapter and by the rename lookup in the activity
+        return (initial?.copy() ?: ManualProxyGroup()).apply {
             this.name = this@ManualGroupFormDialog.name
             this.type = this@ManualGroupFormDialog.type
             this.proxies = selected.toList()

@@ -110,7 +110,14 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
             val groups = current.proxyGroups.toMutableList()
 
             if (initial != null) {
-                val index = groups.indexOfFirst { it.name == initial.name }
+                // match by name first; when the stored name differs, fall
+                // back to the original position so a rename can never turn
+                // into an accidental add
+                var index = groups.indexOfFirst { it.name == initial.name }
+
+                if (index < 0) {
+                    index = current.proxyGroups.indexOfFirst { it.name == initial.name }
+                }
 
                 if (index >= 0) groups[index] = result else groups.add(result)
             } else {

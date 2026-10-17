@@ -91,7 +91,9 @@ class ManualProxyFormDialog(
         if (name.isEmpty()) {
             binding.nameLayout.error = context.getString(R.string.manual_error_name_required)
             valid = false
-        } else if (existingNames.contains(name.lowercase()) && name != initialName) {
+        } else if (existingNames.contains(name.lowercase()) &&
+            !name.equals(initialName, ignoreCase = true)
+        ) {
             binding.nameLayout.error = context.getString(R.string.manual_error_duplicate_name)
             valid = false
         }

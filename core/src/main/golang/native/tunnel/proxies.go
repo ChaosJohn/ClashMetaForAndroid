@@ -82,6 +82,36 @@ func QueryProxyGroupNames(excludeNotSelectable bool) []string {
 	return result
 }
 
+// QueryAllProxies returns every proxy and group known to the running
+// tunnel (members of the GLOBAL group) with their type, usable as manual
+// proxy group members.
+func QueryAllProxies() []Proxy {
+	mode := tunnel.Mode()
+
+	if mode == tunnel.Direct {
+		return []Proxy{}
+	}
+
+	global, ok := tunnel.Proxies()["GLOBAL"].Adapter().(outboundgroup.ProxyGroup)
+	if !ok {
+		return []Proxy{}
+	}
+
+	proxies := global.Providers()[0].Proxies()
+	result := make([]Proxy, 0, len(proxies))
+
+	for _, p := range proxies {
+		_, isGroup := p.Adapter().(outboundgroup.ProxyGroup)
+		result = append(result, Proxy{
+			Name:    p.Name(),
+			Type:    p.Type().String(),
+			IsGroup: isGroup,
+		})
+	}
+
+	return result
+}
+
 func QueryProxyGroup(name string, sortMode SortMode, uiSubtitlePattern *regexp2.Regexp) *ProxyGroup {
 	p := tunnel.Proxies()[name]
 

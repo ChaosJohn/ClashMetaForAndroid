@@ -54,6 +54,13 @@ data class ManualProxyGroup(
 
     @SerialName("proxies")
     var proxies: List<String> = emptyList(),
+
+    /**
+     * Extra mihomo group options, e.g. "url", "interval", "strategy",
+     * "tolerance". Merged verbatim into the generated group mapping.
+     */
+    @SerialName("options")
+    var options: Map<String, String> = emptyMap(),
 ) : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         Parcelizer.encodeToParcel(serializer(), parcel, this)

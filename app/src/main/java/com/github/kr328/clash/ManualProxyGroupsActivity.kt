@@ -1,5 +1,6 @@
 package com.github.kr328.clash
 
+import com.github.kr328.clash.core.model.AllProxies
 import com.github.kr328.clash.core.model.ManualProxyGroup
 import com.github.kr328.clash.design.ManualProxyGroupsDesign
 import com.github.kr328.clash.design.R
@@ -50,23 +51,53 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
     }
 
     private suspend fun editGroup(design: ManualProxyGroupsDesign, initial: ManualProxyGroup?) {
-        val config = withClash { queryManualConfig() }
+        val config = withClash {
+            val manual = queryManualConfig()
+            val all = queryAllProxies()
 
-        if (initial == null && config.proxies.isEmpty()) {
+            manual to all
+        }
+
+        val (manualConfig, allProxies) = config
+
+        if (initial == null && manualConfig.proxies.isEmpty() && allProxies.isEmpty()) {
             design.showToast(R.string.manual_error_no_members, ToastDuration.Long)
 
             return
         }
 
+        // candidates = subscription proxies/groups + manual proxies/groups.
+        // When the tunnel is running, queryAllProxies already contains the
+        // manual entries, so dedup by name (case-insensitive), manual first.
+        val candidates = buildList {
+            val seen = mutableSetOf<String>()
+
+            manualConfig.proxyGroups.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type, isGroup = true))
+                }
+            }
+            manualConfig.proxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type))
+                }
+            }
+            allProxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(it)
+                }
+            }
+        }
+
         val existingNames = buildSet {
-            config.proxies.forEach { add(it.name.lowercase()) }
-            config.proxyGroups.forEach { add(it.name.lowercase()) }
+            manualConfig.proxies.forEach { add(it.name.lowercase()) }
+            manualConfig.proxyGroups.forEach { add(it.name.lowercase()) }
         }
 
         val result = suspendCoroutine<ManualProxyGroup?> { continuation ->
             ManualGroupFormDialog(
                 this,
-                config.proxies,
+                candidates,
                 initial,
                 existingNames,
             ).show {
@@ -86,8 +117,10 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
                 groups.add(result)
             }
 
-            // propagate renames into rule targets
-            val rules = if (initial != null && initial.name != result.name) {
+            // propagate renames into rule targets and other groups' member lists
+            val renamed = initial != null && initial.name != result.name
+
+            val rules = if (renamed) {
                 current.rules.map { rule ->
                     if (rule.target == initial.name) {
                         rule.copy(target = result.name)
@@ -99,8 +132,24 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
                 current.rules
             }
 
+            val patchedGroups = if (renamed) {
+                groups.map { group ->
+                    if (group.name != initial.name && group.proxies.contains(initial.name)) {
+                        group.copy(
+                            proxies = group.proxies.map { member ->
+                                if (member == initial.name) result.name else member
+                            }
+                        )
+                    } else {
+                        group
+                    }
+                }
+            } else {
+                groups
+            }
+
             try {
-                patchManualConfig(current.copy(proxyGroups = groups, rules = rules))
+                patchManualConfig(current.copy(proxyGroups = patchedGroups, rules = rules))
             } catch (e: Exception) {
                 design.showExceptionToast(e)
             }
@@ -112,7 +161,8 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
     private suspend fun deleteGroup(design: ManualProxyGroupsDesign, group: ManualProxyGroup) {
         val config = withClash { queryManualConfig() }
 
-        val inUse = config.rules.any { it.target == group.name }
+        val inUse = config.rules.any { it.target == group.name } ||
+            config.proxyGroups.any { other -> other.proxies.contains(group.name) }
 
         if (inUse) {
             design.showToast(R.string.manual_error_group_in_use, ToastDuration.Long)

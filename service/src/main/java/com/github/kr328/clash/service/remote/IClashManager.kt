@@ -10,6 +10,7 @@ interface IClashManager {
     fun queryTrafficTotal(): Long
     fun queryProxyGroupNames(excludeNotSelectable: Boolean): List<String>
     fun queryProxyGroup(name: String, proxySort: ProxySort): ProxyGroup
+    fun queryAllProxies(): List<AllProxies>
     fun queryConfiguration(): UiConfiguration
     fun queryProviders(): ProviderList
 

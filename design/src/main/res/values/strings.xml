@@ -418,4 +418,17 @@
     <string name="menu_edit">Edit</string>
     <string name="manual_edit_proxy">Edit Proxy</string>
     <string name="manual_edit_group">Edit Group</string>
+    <string name="manual_group_type">Group type</string>
+    <string name="manual_group_test_url">Test URL</string>
+    <string name="manual_group_interval">Interval (seconds)</string>
+    <string name="manual_group_strategy">Strategy</string>
+    <string name="manual_group_tolerance">Tolerance (ms)</string>
+    <string name="manual_group_type_select">select (manually choose)</string>
+    <string name="manual_group_type_url_test">url-test (lowest delay)</string>
+    <string name="manual_group_type_fallback">fallback (failover)</string>
+    <string name="manual_group_type_load_balance">load-balance</string>
+    <string name="manual_group_strategy_round_robin">round-robin</string>
+    <string name="manual_group_strategy_consistent_hashing">consistent-hashing</string>
+    <string name="manual_group_strategy_sticky_sessions">sticky-sessions</string>
+    <string name="manual_member_group">Group</string>
 </resources>

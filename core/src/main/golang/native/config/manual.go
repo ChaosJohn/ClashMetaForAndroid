@@ -128,15 +128,124 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 			}
 		}
 
-		groups := make([]map[string]any, 0, len(cfg.ProxyGroup)+len(manual.ProxyGroup))
+		// members are resolved against every proxy and group known after
+		// the merge above plus the built-in policies; groups may reference
+		// each other, so resolution runs to a fixpoint: a group survives
+		// when it keeps at least one member, dead references are stripped.
+		// This keeps a subscription update that removes or renames nodes
+		// from breaking the whole profile load.
+		valid := make(map[string]bool)
+		for _, p := range cfg.Proxy {
+			if n := nameOfMapping(p); n != "" {
+				valid[n] = true
+			}
+		}
 		for _, g := range cfg.ProxyGroup {
-			if n := nameOfMapping(g); manualGroupNames[n] {
+			if n := nameOfMapping(g); n != "" {
+				valid[n] = true
+			}
+		}
+		for _, b := range []string{"DIRECT", "REJECT", "REJECT-DROP", "PASS", "GLOBAL"} {
+			valid[b] = true
+		}
+
+		var pending []map[string]any
+		pendingNames := make(map[string]bool)
+
+		sanitized := make([]map[string]any, 0, len(manual.ProxyGroup))
+		for _, g := range manual.ProxyGroup {
+			n := nameOfMapping(g)
+			if n == "" {
+				log.Warnln("Apply manual config: drop group without name")
 				continue
 			}
-			groups = append(groups, g)
+
+			if _, ok := g["type"].(string); !ok {
+				g["type"] = "select"
+			}
+
+			if _, ok := g["proxies"].([]any); !ok {
+				log.Warnln("Apply manual config: drop group `%s`: missing proxies", n)
+				continue
+			}
+
+			pending = append(pending, g)
+			pendingNames[n] = true
 		}
-		groups = append(groups, manual.ProxyGroup...)
-		cfg.ProxyGroup = groups
+
+		// resolve to a fixpoint: a group finalizes when every member is a
+		// known proxy / built-in / already finalized group; groups keeping
+		// only unresolved sibling refs wait another round; a group with no
+		// surviving members is dropped, which in turn invalidates the refs
+		// pointing at it. Terminates because every round finalizes or drops
+		// at least one group, otherwise nothing changes and the loop ends.
+		for progress := true; progress && len(pending) > 0; {
+			progress = false
+
+			var rest []map[string]any
+
+			for _, g := range pending {
+				n := nameOfMapping(g)
+				raw, _ := g["proxies"].([]any)
+
+				kept := make([]any, 0, len(raw))
+				unresolved := false
+
+				for _, m := range raw {
+					s, ok := m.(string)
+					if !ok || s == "" || s == n {
+						continue
+					}
+
+					switch {
+					case valid[s]:
+						kept = append(kept, s)
+					case pendingNames[s]:
+						kept = append(kept, s)
+						unresolved = true
+					default:
+						// dead reference, strip it
+					}
+				}
+
+				switch {
+				case unresolved:
+					// wait for siblings to resolve, re-check next round
+					g["proxies"] = kept
+					rest = append(rest, g)
+
+				case len(kept) == 0:
+					log.Warnln("Apply manual config: drop group `%s`: no valid members", n)
+					delete(pendingNames, n)
+					progress = true
+
+				default:
+					g["proxies"] = kept
+					valid[n] = true
+					delete(pendingNames, n)
+					sanitized = append(sanitized, g)
+					progress = true
+				}
+			}
+
+			pending = rest
+		}
+
+		for _, g := range pending {
+			log.Warnln("Apply manual config: drop group `%s`: unresolvable member references", nameOfMapping(g))
+		}
+
+		if len(sanitized) > 0 {
+			groups := make([]map[string]any, 0, len(cfg.ProxyGroup)+len(sanitized))
+			for _, g := range cfg.ProxyGroup {
+				if n := nameOfMapping(g); manualGroupNames[n] {
+					continue
+				}
+				groups = append(groups, g)
+			}
+			groups = append(groups, sanitized...)
+			cfg.ProxyGroup = groups
+		}
 	}
 
 	// merge rules at highest priority

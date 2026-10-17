@@ -113,6 +113,13 @@ object Clash {
         }
     }
 
+    fun queryAllProxies(): List<AllProxies> {
+        return ManualConfigJson.decodeFromString(
+            ListSerializer(AllProxies.serializer()),
+            Bridge.nativeQueryAllProxies()
+        )
+    }
+
     fun queryGroup(name: String, sort: ProxySort): ProxyGroup {
         return Bridge.nativeQueryGroup(name, sort.name)
             ?.let { Json.Default.decodeFromString(ProxyGroup.serializer(), it) }

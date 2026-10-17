@@ -2,13 +2,22 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="proxy"
-            type="com.github.kr328.clash.core.model.ManualProxy" />
+            name="name"
+            type="java.lang.String" />
+        <variable
+            name="subtitle"
+            type="java.lang.String" />
         <variable
             name="checked"
             type="boolean" />
         <variable
             name="clicked"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="moveUp"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="moveDown"
             type="android.view.View.OnClickListener" />
     </data>
 
@@ -21,7 +30,7 @@
         android:minHeight="48dp"
         android:onClick="@{clicked}"
         android:paddingHorizontal="@dimen/item_header_margin"
-        android:paddingVertical="8dp">
+        android:paddingVertical="4dp">
 
         <RadioButton
             android:id="@+id/check_view"
@@ -34,23 +43,58 @@
             android:focusable="false" />
 
         <LinearLayout
+            android:id="@+id/text_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/check_view"
+            android:layout_toStartOf="@id/move_area"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{proxy.name}"
+                android:text="@{name}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{proxy.server + &quot;:&quot; + proxy.port}"
+                android:text="@{subtitle}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/move_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/up_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/manual_move_up"
+                android:onClick="@{moveUp}"
+                android:rotation="90"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_baseline_expand_less"
+                android:visibility="@{moveUp != null ? android.view.View.VISIBLE : android.view.View.GONE}" />
+
+            <ImageView
+                android:id="@+id/down_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/manual_move_down"
+                android:onClick="@{moveDown}"
+                android:rotation="270"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_baseline_expand_less"
+                android:visibility="@{moveDown != null ? android.view.View.VISIBLE : android.view.View.GONE}" />
         </LinearLayout>
     </RelativeLayout>
 </layout>

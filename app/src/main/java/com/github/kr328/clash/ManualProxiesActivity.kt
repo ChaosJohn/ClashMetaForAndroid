@@ -79,8 +79,25 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
                 proxies.add(result)
             }
 
+            // propagate renames into group memberships
+            val groups = if (initial != null && initial.name != result.name) {
+                current.proxyGroups.map { group ->
+                    if (group.proxies.contains(initial.name)) {
+                        group.copy(
+                            proxies = group.proxies.map {
+                                if (it == initial.name) result.name else it
+                            }
+                        )
+                    } else {
+                        group
+                    }
+                }
+            } else {
+                current.proxyGroups
+            }
+
             try {
-                patchManualConfig(current.copy(proxies = proxies))
+                patchManualConfig(current.copy(proxies = proxies, proxyGroups = groups))
             } catch (e: Exception) {
                 design.showExceptionToast(e)
             }

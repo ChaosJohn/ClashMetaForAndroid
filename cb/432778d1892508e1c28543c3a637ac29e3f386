@@ -1,0 +1,46 @@
+app/src/main/java/com/github/kr328/clash/ManualProxyGroupsActivity.kt
+  h_baea9421f36f49 3,54-59,61-63,69-91,93-94,100,120-123,135-150,152,164-165
+core/src/main/cpp/main.c
+  h_baea9421f36f49 170-178
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 131-142,144-168,171-247
+core/src/main/golang/native/tunnel.go
+  h_baea9421f36f49 45-49
+core/src/main/golang/native/tunnel/proxies.go
+  h_baea9421f36f49 85-114
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 116-122
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 27-28
+core/src/main/java/com/github/kr328/clash/core/model/AllProxies.kt
+  h_baea9421f36f49 1-34
+core/src/main/java/com/github/kr328/clash/core/model/ManualConfig.kt
+  h_baea9421f36f49 57-63
+design/src/main/java/com/github/kr328/clash/design/adapter/ManualMemberCheckAdapter.kt
+  h_baea9421f36f49 10-15,18-21,33,36-38,40-41,43,48-53,57
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualGroupFormDialog.kt
+  h_baea9421f36f49 5-6,8,17-22,26,30-44,46-47,57-123,149-184,188-199,201-219,237,249-263
+design/src/main/res/layout/adapter_manual_member_check.xml
+  h_baea9421f36f49 5-9,16-21,33,46,51,57,63,66-98
+design/src/main/res/layout/dialog_manual_group_form.xml
+  h_baea9421f36f49 38-122
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 330-342
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 421-433
+service/src/main/java/com/github/kr328/clash/service/ClashManager.kt
+  h_baea9421f36f49 37-40
+service/src/main/java/com/github/kr328/clash/service/remote/IClashManager.kt
+  h_baea9421f36f49 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cb432778d1892508e1c28543c3a637ac29e3f386",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

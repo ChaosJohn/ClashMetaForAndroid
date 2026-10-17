@@ -171,7 +171,7 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 				continue
 			}
 
-			filter := "+" + server
+			filter := "+." + server
 
 			exists := false
 			for _, f := range cfg.DNS.FakeIPFilter {

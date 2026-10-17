@@ -1,0 +1,16 @@
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualGroupFormDialog.kt
+  h_baea9421f36f49 136-138
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 94-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "baf541fd082e35af1bed99efde8d2fc1a62df00b",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

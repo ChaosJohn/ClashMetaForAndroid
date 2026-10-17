@@ -1,0 +1,110 @@
+app/src/main/AndroidManifest.xml
+  h_baea9421f36f49 185-199
+app/src/main/java/com/github/kr328/clash/ManualProxiesActivity.kt
+  h_baea9421f36f49 1-118
+app/src/main/java/com/github/kr328/clash/ManualProxyGroupsActivity.kt
+  h_baea9421f36f49 1-114
+app/src/main/java/com/github/kr328/clash/ManualRulesActivity.kt
+  h_baea9421f36f49 1-114
+app/src/main/java/com/github/kr328/clash/ProfilesActivity.kt
+  h_baea9421f36f49 80-87
+build.gradle.kts
+  h_baea9421f36f49 68,73,188-189,192
+core/src/main/cpp/main.c
+  h_baea9421f36f49 375-400
+core/src/main/golang/native/config.go
+  h_baea9421f36f49 69-85
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 1-161
+core/src/main/golang/native/config/process.go
+  h_baea9421f36f49 22
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 214-243
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 49-53
+core/src/main/java/com/github/kr328/clash/core/model/ManualConfig.kt
+  h_baea9421f36f49 1-125
+design/src/main/java/com/github/kr328/clash/design/ManualConfigValidator.kt
+  h_baea9421f36f49 1-72
+design/src/main/java/com/github/kr328/clash/design/ManualMenus.kt
+  h_baea9421f36f49 1-38
+design/src/main/java/com/github/kr328/clash/design/ManualProxiesDesign.kt
+  h_baea9421f36f49 1-70
+design/src/main/java/com/github/kr328/clash/design/ManualProxyGroupsDesign.kt
+  h_baea9421f36f49 1-70
+design/src/main/java/com/github/kr328/clash/design/ManualRulesDesign.kt
+  h_baea9421f36f49 1-85
+design/src/main/java/com/github/kr328/clash/design/ProfilesDesign.kt
+  h_baea9421f36f49 14,40-43,111-142,158-173
+design/src/main/java/com/github/kr328/clash/design/adapter/ManualGroupAdapter.kt
+  h_baea9421f36f49 1-43
+design/src/main/java/com/github/kr328/clash/design/adapter/ManualMemberCheckAdapter.kt
+  h_baea9421f36f49 1-45
+design/src/main/java/com/github/kr328/clash/design/adapter/ManualProxyAdapter.kt
+  h_baea9421f36f49 1-43
+design/src/main/java/com/github/kr328/clash/design/adapter/ManualRuleAdapter.kt
+  h_baea9421f36f49 1-54
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualGroupFormDialog.kt
+  h_baea9421f36f49 1-101
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 1-136
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualRuleFormDialog.kt
+  h_baea9421f36f49 1-98
+design/src/main/res/drawable/ic_baseline_archive.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/drawable/ic_baseline_drag_handle.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/drawable/ic_baseline_expand_less.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/drawable/ic_baseline_play_arrow_outline.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/drawable/ic_baseline_radio_button_unchecked.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/drawable/ic_baseline_rule.xml
+  h_baea9421f36f49 1-10
+design/src/main/res/layout/adapter_manual_group.xml
+  h_baea9421f36f49 1-76
+design/src/main/res/layout/adapter_manual_member_check.xml
+  h_baea9421f36f49 1-56
+design/src/main/res/layout/adapter_manual_proxy.xml
+  h_baea9421f36f49 1-76
+design/src/main/res/layout/adapter_manual_rule.xml
+  h_baea9421f36f49 1-132
+design/src/main/res/layout/design_manual_groups.xml
+  h_baea9421f36f49 1-67
+design/src/main/res/layout/design_manual_proxies.xml
+  h_baea9421f36f49 1-67
+design/src/main/res/layout/design_manual_rules.xml
+  h_baea9421f36f49 1-67
+design/src/main/res/layout/design_profiles.xml
+  h_baea9421f36f49 65-79
+design/src/main/res/layout/dialog_manual_config_menu.xml
+  h_baea9421f36f49 1-59
+design/src/main/res/layout/dialog_manual_group_form.xml
+  h_baea9421f36f49 1-61
+design/src/main/res/layout/dialog_manual_item_menu.xml
+  h_baea9421f36f49 1-42
+design/src/main/res/layout/dialog_manual_proxy_form.xml
+  h_baea9421f36f49 1-113
+design/src/main/res/layout/dialog_manual_rule_form.xml
+  h_baea9421f36f49 1-82
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 285-329
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 376-420
+service/src/main/java/com/github/kr328/clash/service/ClashManager.kt
+  h_baea9421f36f49 71-86
+service/src/main/java/com/github/kr328/clash/service/remote/IClashManager.kt
+  h_baea9421f36f49 25-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "30a5f3442259077075176f11a9d411e68aeeca06",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

@@ -162,12 +162,14 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 	// manual proxy server domains must never resolve to fake-ip, otherwise
 	// the ss dialer would connect to a fake address and time out. Only
 	// blacklist mode (the default) uses the filter to bypass fake-ip.
+	// Domains are validated first: an invalid filter entry aborts the whole
+	// profile load, so malformed servers are skipped instead.
 	if len(manual.Proxies) > 0 &&
 		cfg.DNS.FakeIPFilterMode == C.FilterBlackList {
 		for _, p := range manual.Proxies {
 			server, _ := p["server"].(string)
 			server = strings.TrimSpace(server)
-			if server == "" || net.ParseIP(server) != nil {
+			if server == "" || net.ParseIP(server) != nil || !validDomain(server) {
 				continue
 			}
 
@@ -187,4 +189,29 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 	}
 
 	return nil
+}
+
+// validDomain reports whether s is a plain hostname usable in a
+// fake-ip-filter entry ("+." + s). Invalid entries would abort the whole
+// profile load, so callers must skip them.
+func validDomain(s string) bool {
+	if len(s) == 0 || len(s) > 253 {
+		return false
+	}
+
+	for _, label := range strings.Split(s, ".") {
+		if label == "" || len(label) > 63 {
+			return false
+		}
+
+		for i := 0; i < len(label); i++ {
+			c := label[i]
+			if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_' {
+				continue
+			}
+			return false
+		}
+	}
+
+	return true
 }

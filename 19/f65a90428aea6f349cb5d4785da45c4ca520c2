@@ -1,0 +1,14 @@
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "19f65a90428aea6f349cb5d4785da45c4ca520c2",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

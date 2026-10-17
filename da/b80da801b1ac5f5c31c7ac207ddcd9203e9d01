@@ -1,0 +1,26 @@
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 83-114,135-147
+core/src/main/java/com/github/kr328/clash/core/model/ManualConfig.kt
+  h_baea9421f36f49 8,32-40
+design/build.gradle.kts
+  h_baea9421f36f49 22
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 4,6,12-16,19,21-24,32-44,56-74,83,108,113-117,125-162,165,171-172,176-190,204-216,225-247,257-266,272-273
+design/src/main/res/layout/dialog_manual_proxy_form.xml
+  h_baea9421f36f49 38-52,120-229
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 343-351
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 434-442
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dab80da801b1ac5f5c31c7ac207ddcd9203e9d01",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

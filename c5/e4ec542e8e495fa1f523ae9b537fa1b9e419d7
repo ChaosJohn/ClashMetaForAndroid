@@ -1,0 +1,18 @@
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 83-87,92,94-96,103-111,113-121
+core/src/main/java/com/github/kr328/clash/core/model/ManualConfig.kt
+  h_baea9421f36f49 35-37,40
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 12,15,54,57-62,65-66,69-73,126-127,129,134,150-162,166,178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5e4ec542e8e495fa1f523ae9b537fa1b9e419d7",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

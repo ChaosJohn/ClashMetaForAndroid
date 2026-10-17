@@ -18,17 +18,13 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
 
         setContentDesign(design)
 
-        withClash {
-            design.patchConfig(queryManualConfig())
-        }
+        reload(design)
 
         while (isActive) {
             select<Unit> {
                 events.onReceive {
                     if (it == Event.ActivityStart) {
-                        withClash {
-                            design.patchConfig(queryManualConfig())
-                        }
+                        reload(design)
                     }
                 }
                 design.requests.onReceive {
@@ -44,6 +40,12 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun reload(design: ManualProxyGroupsDesign) {
+        withClash {
+            design.patchConfig(queryManualConfig())
         }
     }
 
@@ -90,6 +92,8 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
                 design.showExceptionToast(e)
             }
         }
+
+        reload(design)
     }
 
     private suspend fun deleteGroup(design: ManualProxyGroupsDesign, group: ManualProxyGroup) {
@@ -110,5 +114,7 @@ class ManualProxyGroupsActivity : BaseActivity<ManualProxyGroupsDesign>() {
                 )
             )
         }
+
+        reload(design)
     }
 }

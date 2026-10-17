@@ -18,17 +18,13 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
 
         setContentDesign(design)
 
-        withClash {
-            design.patchConfig(queryManualConfig())
-        }
+        reload(design)
 
         while (isActive) {
             select<Unit> {
                 events.onReceive {
                     if (it == Event.ActivityStart) {
-                        withClash {
-                            design.patchConfig(queryManualConfig())
-                        }
+                        reload(design)
                     }
                 }
                 design.requests.onReceive {
@@ -44,6 +40,12 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun reload(design: ManualProxiesDesign) {
+        withClash {
+            design.patchConfig(queryManualConfig())
         }
     }
 
@@ -83,6 +85,8 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
                 design.showExceptionToast(e)
             }
         }
+
+        reload(design)
     }
 
     private suspend fun deleteProxy(design: ManualProxiesDesign, proxy: ManualProxy) {
@@ -101,6 +105,8 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
                 config.copy(proxies = config.proxies.filterNot { it.name == proxy.name })
             )
         }
+
+        reload(design)
     }
 
     companion object {

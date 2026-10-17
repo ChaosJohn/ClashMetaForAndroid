@@ -80,30 +80,45 @@ func nameOfMapping(m map[string]any) string {
 	return ""
 }
 
-// expandExtras merges each proxy's "extras" object into the proxy mapping
-// and strips the key. Extras carry type-specific mihomo fields (e.g. uuid,
-// ws-opts for vless) produced by the manual proxy form; values are already
-// decoded JSON, so they are inserted as-is.
+// expandExtras merges each proxy's "extras" map into the proxy mapping and
+// strips the key. Extras carry type-specific mihomo fields (e.g. uuid,
+// ws-opts for vless) produced by the manual proxy form. Values arrive as
+// strings through the JSON round trip: JSON-looking text ("true", objects)
+// is decoded to its real type, anything else is used as a plain string.
 func expandExtras(proxies []map[string]any) []map[string]any {
 	expanded := make([]map[string]any, 0, len(proxies))
 
 	for _, p := range proxies {
-		raw, ok := p["extras"]
+		extras, ok := p["extras"].(map[string]any)
 		if !ok {
+			if _, exists := p["extras"]; exists {
+				delete(p, "extras")
+			}
 			expanded = append(expanded, p)
 			continue
 		}
 
 		delete(p, "extras")
 
-		if extras, ok := raw.(map[string]any); ok {
-			for k, v := range extras {
-				if _, exists := p[k]; !exists {
-					p[k] = v
-				}
+		for k, v := range extras {
+			if _, exists := p[k]; exists {
+				continue
 			}
-		} else if raw != nil {
-			log.Warnln("Apply manual config: ignored malformed extras on proxy `%s`", nameOfMapping(p))
+
+			s, ok := v.(string)
+			if !ok {
+				log.Warnln("Apply manual config: ignored malformed extra `%s` on proxy `%s`", k, nameOfMapping(p))
+				continue
+			}
+
+			value := any(s)
+
+			var decoded any
+			if err := json.Unmarshal([]byte(s), &decoded); err == nil {
+				value = decoded
+			}
+
+			p[k] = value
 		}
 
 		expanded = append(expanded, p)

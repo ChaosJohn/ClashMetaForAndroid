@@ -9,10 +9,10 @@ import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.databinding.DialogManualProxyFormBinding
 import com.github.kr328.clash.design.util.layoutInflater
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
 /**
@@ -37,9 +37,6 @@ class ManualProxyFormDialog(
 
         private val FINGERPRINTS = listOf("chrome", "firefox", "safari", "ios", "android", "edge", "random")
         private val NETWORKS = listOf("tcp", "ws")
-
-        private fun JsonElement?.asStringOrNull(): String =
-            (this as? JsonPrimitive)?.content.orEmpty()
     }
 
     private val initialName = initial?.name.orEmpty()
@@ -54,22 +51,26 @@ class ManualProxyFormDialog(
     private var cipher: String = initial?.cipher ?: "aes-256-gcm"
     private var udp: Boolean? = initial?.udp
     private var type: String = initial?.type?.takeIf { it in TYPES } ?: TYPE_SS
-    private var extras: Map<String, JsonElement> = initial?.extras ?: emptyMap()
+    private var extras: Map<String, String> = initial?.extras ?: emptyMap()
 
     private val fromExtras: Map<String, String> by lazy {
-        val wsOpts = extras["ws-opts"]?.let { runCatching { it.jsonObject }.getOrNull() }
-        val wsHeaders = wsOpts?.get("headers")?.let { runCatching { it.jsonObject }.getOrNull() }
+        val wsOpts = extras["ws-opts"]?.let {
+            runCatching { Json.parseToJsonElement(it).jsonObject }.getOrNull()
+        }
+        val wsHeaders = wsOpts?.get("headers")?.let {
+            runCatching { it.jsonObject["Host"]?.jsonPrimitive?.content }.getOrNull()
+        }
 
         buildMap {
-            extras["uuid"]?.let { put("uuid", it.asStringOrNull()) }
-            if (extras["tls"]?.asStringOrNull() == "true") {
+            extras["uuid"]?.let { put("uuid", it) }
+            if (extras["tls"] == "true") {
                 put("tls", "true")
             }
-            extras["network"]?.let { put("network", it.asStringOrNull()) }
-            extras["servername"]?.let { put("servername", it.asStringOrNull()) }
-            extras["client-fingerprint"]?.let { put("client-fingerprint", it.asStringOrNull()) }
-            wsOpts?.get("path")?.let { put("ws-path", it.asStringOrNull()) }
-            wsHeaders?.get("Host")?.let { put("ws-host", it.asStringOrNull()) }
+            extras["network"]?.let { put("network", it) }
+            extras["servername"]?.let { put("servername", it) }
+            extras["client-fingerprint"]?.let { put("client-fingerprint", it) }
+            wsOpts?.get("path")?.let { put("ws-path", it.jsonPrimitive.content) }
+            wsHeaders?.let { put("ws-host", it) }
         }.filterValues { it.isNotEmpty() }
     }
 
@@ -122,13 +123,15 @@ class ManualProxyFormDialog(
     }
 
     private fun build(): ManualProxy {
+        // extras values are raw JSON text so the mapping stays
+        // Parcel-friendly: plain strings unquoted, objects as JSON objects
         val builtExtras = if (type == TYPE_VLESS) {
-            buildJsonObject {
+            buildMap {
                 binding.uuidField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
                     put("uuid", it)
                 }
                 if (binding.tlsSwitch.isChecked) {
-                    put("tls", true)
+                    put("tls", "true")
                 }
                 binding.networkField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
                     put("network", it)
@@ -144,20 +147,23 @@ class ManualProxyFormDialog(
                 val wsHost = binding.wsHostField.text?.toString()?.trim().orEmpty()
 
                 if (wsPath.isNotEmpty() || wsHost.isNotEmpty()) {
-                    put("ws-opts", buildJsonObject {
-                        if (wsPath.isNotEmpty()) {
-                            put("path", wsPath)
-                        }
-                        if (wsHost.isNotEmpty()) {
-                            put("headers", buildJsonObject {
-                                put("Host", wsHost)
-                            })
-                        }
-                    })
+                    put(
+                        "ws-opts",
+                        buildJsonObject {
+                            if (wsPath.isNotEmpty()) {
+                                put("path", wsPath)
+                            }
+                            if (wsHost.isNotEmpty()) {
+                                put("headers", buildJsonObject {
+                                    put("Host", wsHost)
+                                })
+                            }
+                        }.toString()
+                    )
                 }
             }
         } else {
-            null
+            emptyMap()
         }
 
         return (initial ?: ManualProxy()).apply {
@@ -169,7 +175,7 @@ class ManualProxyFormDialog(
             this.cipher = this@ManualProxyFormDialog.cipher
             this.udp = this@ManualProxyFormDialog.udp
 
-            this.extras = builtExtras ?: emptyMap()
+            this.extras = builtExtras
         }
     }
 

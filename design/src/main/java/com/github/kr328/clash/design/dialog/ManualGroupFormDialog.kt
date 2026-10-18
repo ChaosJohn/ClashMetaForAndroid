@@ -213,6 +213,7 @@ class ManualGroupFormDialog(
         binding.typeField.setOnItemClickListener { _, _, position, _ ->
             type = TYPES[position]
             applyTypeVisibility()
+            rebuildAdapter()
         }
 
         binding.strategyField.setAdapter(

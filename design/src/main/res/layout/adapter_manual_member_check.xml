@@ -79,7 +79,6 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/manual_move_up"
                 android:onClick="@{moveUp}"
-                android:rotation="90"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_baseline_expand_less"
                 android:visibility="@{moveUp != null ? android.view.View.VISIBLE : android.view.View.GONE}" />
@@ -91,7 +90,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/manual_move_down"
                 android:onClick="@{moveDown}"
-                android:rotation="270"
+                android:rotation="180"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_baseline_expand_less"
                 android:visibility="@{moveDown != null ? android.view.View.VISIBLE : android.view.View.GONE}" />

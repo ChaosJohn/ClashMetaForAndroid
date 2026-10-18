@@ -78,12 +78,18 @@ class ManualGroupFormDialog(
     }
 
     private fun rebuildAdapter() {
-        val ordered = selected.firstOrNull()?.let {
-            // keep selected members on top, in member order
-            val chosen = candidates.filter { p -> selected.contains(p.name) }
+        val ordered = if (selected.isNotEmpty()) {
+            // keep selected members on top, in the manually chosen order
+            // stored in selected; fall back to candidate order only for
+            // names that no longer exist
+            val chosen = selected.toList().mapNotNull { name ->
+                candidates.find { it.name == name }
+            }
             val rest = candidates.filterNot { p -> selected.contains(p.name) }
             chosen + rest
-        } ?: candidates
+        } else {
+            candidates
+        }
 
         val moveEnabled = type == TYPE_FALLBACK || type == TYPE_LOAD_BALANCE ||
             type == TYPE_URL_TEST

@@ -320,13 +320,11 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 		}
 	}
 
-	// inject manual entries into well-known subscription selection groups so
-	// that users can pick them without editing the subscription. A group
-	// matches when its name contains one of the keywords below (case
-	// insensitive). Within each matched group the member order becomes:
-	// manual groups, remaining subscription groups, manual proxies,
-	// remaining subscription proxies; non-group/non-proxy members (DIRECT,
-	// REJECT, ...) keep their place at the tail.
+	// inject manual entries into every subscription-provided group so that
+	// users can pick them without editing the subscription. Within each
+	// group the member order becomes: manual groups, remaining subscription
+	// groups, manual proxies, remaining subscription proxies; non-group/
+	// non-proxy members (DIRECT, REJECT, ...) keep their place at the tail.
 	// survivingManualGroups is in sanitizer resolution order, so the
 	// injection order is rebuilt from the configured order of the manual
 	// groups, restricted to the ones that survived sanitization.
@@ -394,56 +392,6 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 	return nil
 }
 
-// injectionKeywords lists lowercased substrings identifying the
-// subscription selection groups that receive manual entries.
-var injectionKeywords = []string{
-	"proxy",
-	"proxies",
-	"节点选择",
-	"手动选择",
-	"手动切换",
-	"final",
-	"漏网之鱼",
-	"兜底分流",
-}
-
-// matchesInjectionKeyword reports whether a group name contains any known
-// selection keyword, ignoring case and emoji/space decoration.
-func matchesInjectionKeyword(name string) bool {
-	norm := normalizeGroupName(name)
-	if norm == "" {
-		return false
-	}
-	for _, k := range injectionKeywords {
-		if strings.Contains(norm, k) {
-			return true
-		}
-	}
-	return false
-}
-
-// normalizeGroupName lowercases a name and strips characters that carry no
-// meaning for keyword matching: whitespace and anything outside letters,
-// digits and CJK ranges (emoji, symbols, decoration).
-func normalizeGroupName(name string) string {
-	var b strings.Builder
-	for _, r := range name {
-		switch {
-		case r >= 'a' && r <= 'z':
-			b.WriteRune(r)
-		case r >= 'A' && r <= 'Z':
-			b.WriteRune(r + 'a' - 'A')
-		case r >= '0' && r <= '9':
-			b.WriteRune(r)
-		case r >= 0x4E00 && r <= 0x9FFF: // CJK unified ideographs
-			b.WriteRune(r)
-		case r >= 0x3040 && r <= 0x30FF: // hiragana/katakana
-			b.WriteRune(r)
-		}
-	}
-	return b.String()
-}
-
 // injectManualEntries reorders the member list of matching subscription
 // groups so manual groups come first, then subscription groups, manual
 // proxies and subscription proxies; non-proxy members (DIRECT, REJECT,
@@ -480,7 +428,7 @@ func injectManualEntries(cfg *config.RawConfig, manualGroupNames map[string]bool
 
 	for _, g := range cfg.ProxyGroup {
 		name := nameOfMapping(g)
-		if manualGroupNames[name] || !matchesInjectionKeyword(name) {
+		if manualGroupNames[name] {
 			continue
 		}
 

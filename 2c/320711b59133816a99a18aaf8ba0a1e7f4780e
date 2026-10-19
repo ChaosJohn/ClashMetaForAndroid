@@ -1,0 +1,44 @@
+app/src/main/java/com/github/kr328/clash/ProxyActivity.kt
+  h_baea9421f36f49 5,9,11,13-14,116-120,247-353
+core/src/main/cpp/main.c
+  h_baea9421f36f49 443-465
+core/src/main/golang/native/config.go
+  h_baea9421f36f49 101-110
+core/src/main/golang/native/config/process.go
+  h_baea9421f36f49 24
+core/src/main/golang/native/config/proxyoverride.go
+  h_baea9421f36f49 1-128
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 277-302
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 60-62
+design/src/main/java/com/github/kr328/clash/design/ProxyDesign.kt
+  h_baea9421f36f49 40,121,123-124
+design/src/main/java/com/github/kr328/clash/design/adapter/ProxyAdapter.kt
+  h_baea9421f36f49 12,33-41
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 269-270,273-278
+design/src/main/java/com/github/kr328/clash/design/dialog/ProxyDialerOverrideDialog.kt
+  h_baea9421f36f49 1-74
+design/src/main/res/layout/dialog_proxy_dialer_override.xml
+  h_baea9421f36f49 1-35
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 317,360-361
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 408,451-452
+service/src/main/java/com/github/kr328/clash/service/ClashManager.kt
+  h_baea9421f36f49 111-120
+service/src/main/java/com/github/kr328/clash/service/remote/IClashManager.kt
+  h_baea9421f36f49 33-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2c320711b59133816a99a18aaf8ba0a1e7f4780e",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

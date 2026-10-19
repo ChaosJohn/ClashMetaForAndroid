@@ -9,6 +9,7 @@ import com.github.kr328.clash.design.component.ProxyViewState
 class ProxyAdapter(
     private val config: ProxyViewConfig,
     private val clicked: (String) -> Unit,
+    private val longClicked: (String) -> Unit = {},
 ) : RecyclerView.Adapter<ProxyAdapter.Holder>() {
     class Holder(val view: ProxyView) : RecyclerView.ViewHolder(view)
 
@@ -27,6 +28,15 @@ class ProxyAdapter(
 
             setOnClickListener {
                 clicked(current.proxy.name)
+            }
+
+            // long press a subscription proxy card to edit its dialer-proxy
+            // override; the callback decides eligibility (groups and manual
+            // proxies are excluded there)
+            setOnLongClickListener {
+                longClicked(current.proxy.name)
+
+                true
             }
 
             val isSelector = selectable

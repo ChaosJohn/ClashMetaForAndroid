@@ -274,6 +274,32 @@ object Clash {
         )
     }
 
+    /**
+     * Per-profile dynamic overrides for subscription proxies, keyed by
+     * proxy name (currently: dialer-proxy). Applied by the Go merger at
+     * load time; the subscription file is never modified.
+     */
+    fun queryProxyOverrides(profileId: String): Map<String, Map<String, String>> {
+        return try {
+            ManualConfigJson.decodeFromString(
+                MapSerializer(String.serializer(), MapSerializer(String.serializer(), String.serializer())),
+                Bridge.nativeReadProxyOverrides(profileId)
+            )
+        } catch (e: Exception) {
+            emptyMap()
+        }
+    }
+
+    fun patchProxyOverrides(profileId: String, overrides: Map<String, Map<String, String>>) {
+        Bridge.nativeWriteProxyOverrides(
+            profileId,
+            ManualConfigJson.encodeToString(
+                MapSerializer(String.serializer(), MapSerializer(String.serializer(), String.serializer())),
+                overrides
+            )
+        )
+    }
+
     fun queryConfiguration(): UiConfiguration {
         return Json.Default.decodeFromString(
             UiConfiguration.serializer(),

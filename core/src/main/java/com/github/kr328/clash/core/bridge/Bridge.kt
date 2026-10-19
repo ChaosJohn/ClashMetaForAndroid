@@ -57,6 +57,9 @@ object Bridge {
     external fun nativeWriteGroupOverrides(profileId: String, content: String)
     external fun nativeClearGroupOverrides(profileId: String)
 
+    external fun nativeReadProxyOverrides(profileId: String): String
+    external fun nativeWriteProxyOverrides(profileId: String, content: String)
+
     external fun nativeQueryConfiguration(): String
     external fun nativeSubscribeLogcat(callback: LogcatInterface)
     external fun nativeCoreVersion(): String

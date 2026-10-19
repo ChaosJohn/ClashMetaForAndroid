@@ -314,6 +314,7 @@
     <string name="override_group_title">修改 %1$s 的类型</string>
     <string name="override_restore_default">恢复订阅默认</string>
     <string name="override_applied_toast">分组类型已修改，正在重载配置</string>
+    <string name="override_applied_toast_short">覆盖已应用，正在重载配置</string>
     <string name="manual_error_server_required">服务器不能为空</string>
     <string name="manual_error_port_invalid">端口无效</string>
     <string name="manual_error_password_required">密码不能为空</string>
@@ -356,5 +357,7 @@
     <string name="manual_proxy_ws_path">WebSocket 路径</string>
     <string name="manual_proxy_ws_host">WebSocket Host 头</string>
     <string name="manual_proxy_dialer_proxy">前置代理（dialer-proxy）</string>
+    <string name="manual_clear_value">（清空）</string>
+    <string name="proxy_dialer_override_title">%1$s 的前置代理</string>
     <string name="manual_error_uuid_required">UUID 不能为空</string>
 </resources>

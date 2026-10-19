@@ -98,6 +98,16 @@ func clearGroupOverrides(profileID C.c_string) {
 	config.ClearGroupOverrides(C.GoString(profileID))
 }
 
+//export readProxyOverrides
+func readProxyOverrides(profileID C.c_string) *C.char {
+	return C.CString(config.ReadProxyOverrides(C.GoString(profileID)))
+}
+
+//export writeProxyOverrides
+func writeProxyOverrides(profileID, content C.c_string) {
+	config.WriteProxyOverrides(C.GoString(profileID), C.GoString(content))
+}
+
 //export setAgeSecretKey
 func setAgeSecretKey(key C.c_string) {
 	if key == nil {

@@ -108,6 +108,16 @@ class ClashManager(private val context: Context) : IClashManager,
         context.sendOverrideChanged()
     }
 
+    override fun queryProxyOverrides(profileId: String): Map<String, Map<String, String>> {
+        return Clash.queryProxyOverrides(profileId)
+    }
+
+    override fun patchProxyOverrides(profileId: String, overrides: Map<String, Map<String, String>>) {
+        Clash.patchProxyOverrides(profileId, overrides)
+
+        context.sendOverrideChanged()
+    }
+
     override fun queryActiveProfileId(): String {
         return store.activeProfile?.toString() ?: ""
     }

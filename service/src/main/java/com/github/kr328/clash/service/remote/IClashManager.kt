@@ -30,6 +30,9 @@ interface IClashManager {
     fun queryGroupOverrides(profileId: String): Map<String, Map<String, String>>
     fun patchGroupOverrides(profileId: String, overrides: Map<String, Map<String, String>>)
 
+    fun queryProxyOverrides(profileId: String): Map<String, Map<String, String>>
+    fun patchProxyOverrides(profileId: String, overrides: Map<String, Map<String, String>>)
+
     /** UUID string of the active profile, empty when none is active. */
     fun queryActiveProfileId(): String
 

@@ -2,11 +2,16 @@ package com.github.kr328.clash
 
 import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.core.Clash
+import com.github.kr328.clash.core.model.AllProxies
 import com.github.kr328.clash.core.model.Proxy
 import com.github.kr328.clash.core.model.ProxyGroupOverride
 import com.github.kr328.clash.design.ProxyDesign
+import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.dialog.GroupOverrideFormDialog
+import com.github.kr328.clash.design.dialog.ProxyDialerOverrideDialog
 import com.github.kr328.clash.design.model.ProxyState
+import com.github.kr328.clash.design.ui.ToastDuration
+import com.github.kr328.clash.design.util.showExceptionToast
 import com.github.kr328.clash.util.withClash
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -106,6 +111,11 @@ class ProxyActivity : BaseActivity<ProxyDesign>() {
                         is ProxyDesign.Request.OverrideGroupType -> {
                             launch {
                                 overrideGroupType(names, design, it.index)
+                            }
+                        }
+                        is ProxyDesign.Request.OverrideProxyDialer -> {
+                            launch {
+                                overrideProxyDialer(design, it.name)
                             }
                         }
                         is ProxyDesign.Request.PatchMode -> {
@@ -233,5 +243,112 @@ class ProxyActivity : BaseActivity<ProxyDesign>() {
         design.requestRedrawVisible()
 
         design.requests.send(ProxyDesign.Request.Reload(index))
+    }
+
+    /**
+     * Long press on a subscription proxy card: edit its dialer-proxy
+     * override (per-profile, applied by the Go merger at load time).
+     *
+     * Groups are skipped (dialer-proxy is not supported on groups) and
+     * manually defined proxies are skipped (their dialer-proxy lives in
+     * the manual proxy form).
+     */
+    private suspend fun overrideProxyDialer(design: ProxyDesign, name: String) {
+        val manual = withClash { queryManualConfig() }
+
+        if (manual.proxies.any { it.name == name } || manual.proxyGroups.any { it.name == name }) {
+            return
+        }
+
+        val profileId = withClash { queryActiveProfileId() }
+        if (profileId.isEmpty()) {
+            return
+        }
+
+        val config = withClash {
+            val all = queryAllProxies()
+            val overrides = queryProxyOverrides(profileId)
+
+            Triple(all, overrides, queryManualConfig())
+        }
+
+        val (allProxies, overrides, manualConfig) = config
+
+        val target = allProxies.find { it.name == name } ?: return
+        if (target.isGroup) {
+            return
+        }
+
+        // candidates: any known proxy/group except the target itself and
+        // built-in policies; chained through them the traffic reaches the
+        // target. Manual entries first (dedup, case-insensitive).
+        val candidates = buildList {
+            val seen = mutableSetOf(name.lowercase())
+
+            manualConfig.proxyGroups.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type, isGroup = true))
+                }
+            }
+            manualConfig.proxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type))
+                }
+            }
+            allProxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(it)
+                }
+            }
+        }.filter {
+            !it.isGroup || it.type.lowercase() !in BUILTIN_POLICIES
+        }
+
+        val current = overrides[name]?.get("dialer-proxy")
+
+        val dialogResult = suspendCoroutine<Pair<String?, Boolean>> { c ->
+            ProxyDialerOverrideDialog(this, name, current, candidates).show { result, isRestore ->
+                c.resume(result to isRestore)
+            }
+        }
+
+        val value = dialogResult.first
+        val restore = dialogResult.second
+
+        // negative button / back dismisses with a null result: cancel
+        // without touching anything. An empty string from the positive
+        // button is the legitimate clear action.
+        if (value == null && !restore) {
+            return
+        }
+
+        try {
+            withClash {
+                val next = if (restore) {
+                    overrides - name
+                } else {
+                    val trimmed = value?.trim().orEmpty()
+
+                    if (trimmed.isEmpty()) {
+                        // empty value removes the override entirely
+                        overrides - name
+                    } else {
+                        overrides + (name to mapOf("dialer-proxy" to trimmed))
+                    }
+                }
+
+                patchProxyOverrides(profileId, next)
+            }
+        } catch (e: RuntimeException) {
+            design.showExceptionToast(e)
+            return
+        }
+
+        design.showToast(R.string.override_applied_toast_short, ToastDuration.Short)
+        design.requestRedrawVisible()
+    }
+
+    companion object {
+        private val BUILTIN_POLICIES = setOf("direct", "reject", "reject-drop", "pass", "global")
     }
 }

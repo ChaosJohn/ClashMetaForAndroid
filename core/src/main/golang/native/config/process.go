@@ -21,6 +21,7 @@ var processors = []processor{
 	patchOverride,
 	patchManualConfig,
 	patchGroupOverrides, // after patchManualConfig: never double-patch manual groups
+	patchProxyOverrides, // after patchManualConfig: never touch manual proxies
 	patchGeneral,
 	patchProfile,
 	patchDns,

@@ -266,9 +266,16 @@ class ManualProxyFormDialog(
                     ArrayAdapter(
                         context,
                         android.R.layout.simple_dropdown_item_1line,
-                        dialerCandidates.map { it.name }
+                        listOf(context.getString(R.string.manual_clear_value)) +
+                            dialerCandidates.map { it.name }
                     )
                 )
+                binding.dialerProxyField.setOnItemClickListener { _, _, position, _ ->
+                    // first entry is the clear action
+                    if (position == 0) {
+                        binding.dialerProxyField.setText("", false)
+                    }
+                }
                 binding.dialerProxyField.showSuggestionsOnTap()
             }
 

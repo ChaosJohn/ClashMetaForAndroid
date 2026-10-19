@@ -37,6 +37,7 @@ class ProxyDesign(
         data class Select(val index: Int, val name: String) : Request()
         data class UrlTest(val index: Int) : Request()
         data class OverrideGroupType(val index: Int) : Request()
+        data class OverrideProxyDialer(val name: String) : Request()
     }
 
     private val binding = DesignProxyBinding
@@ -117,8 +118,10 @@ class ProxyDesign(
                     surface,
                     config,
                     List(groupNames.size) { index ->
-                        ProxyAdapter(config) { name ->
+                        ProxyAdapter(config, { name ->
                             requests.trySend(Request.Select(index, name))
+                        }) { name ->
+                            requests.trySend(Request.OverrideProxyDialer(name))
                         }
                     }
                 ) {

@@ -405,6 +405,7 @@
     <string name="override_group_title">Change type of %1$s</string>
     <string name="override_restore_default">Restore subscription default</string>
     <string name="override_applied_toast">Group type changed, reloading profile</string>
+    <string name="override_applied_toast_short">Override applied, reloading profile</string>
     <string name="manual_error_server_required">Server is required</string>
     <string name="manual_error_port_invalid">Invalid port</string>
     <string name="manual_error_password_required">Password is required</string>
@@ -447,5 +448,7 @@
     <string name="manual_proxy_ws_path">WebSocket path</string>
     <string name="manual_proxy_ws_host">WebSocket Host header</string>
     <string name="manual_proxy_dialer_proxy">Dialer proxy (dialer-proxy)</string>
+    <string name="manual_clear_value">(clear)</string>
+    <string name="proxy_dialer_override_title">Dialer proxy of %1$s</string>
     <string name="manual_error_uuid_required">UUID is required</string>
 </resources>

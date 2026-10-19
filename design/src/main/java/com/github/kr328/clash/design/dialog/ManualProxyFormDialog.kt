@@ -4,10 +4,12 @@ import android.content.Context
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import com.github.kr328.clash.core.model.AllProxies
 import com.github.kr328.clash.core.model.ManualProxy
 import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.databinding.DialogManualProxyFormBinding
 import com.github.kr328.clash.design.util.layoutInflater
+import com.github.kr328.clash.design.util.showSuggestionsOnTap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -28,6 +30,7 @@ class ManualProxyFormDialog(
     private val ciphers: List<String>,
     private val initial: ManualProxy?,
     private val existingNames: Set<String>,
+    private val dialerCandidates: List<AllProxies> = emptyList(),
 ) {
     companion object {
         private const val TYPE_SS = "ss"
@@ -71,6 +74,7 @@ class ManualProxyFormDialog(
             extras["client-fingerprint"]?.let { put("client-fingerprint", it) }
             wsOpts?.get("path")?.let { put("ws-path", it.jsonPrimitive.content) }
             wsHeaders?.let { put("ws-host", it) }
+            extras["dialer-proxy"]?.let { put("dialer-proxy", it) }
         }.filterValues { it.isNotEmpty() }
     }
 
@@ -163,9 +167,15 @@ class ManualProxyFormDialog(
                         }.toString()
                     )
                 }
+
+                binding.dialerProxyField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    put("dialer-proxy", it)
+                }
             }
         } else {
-            emptyMap()
+            binding.dialerProxyField.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                mapOf("dialer-proxy" to it)
+            } ?: emptyMap()
         }
 
         // never mutate the initial instance: it is still referenced by the
@@ -251,6 +261,17 @@ class ManualProxyFormDialog(
                 )
             )
 
+            if (dialerCandidates.isNotEmpty()) {
+                binding.dialerProxyField.setAdapter(
+                    ArrayAdapter(
+                        context,
+                        android.R.layout.simple_dropdown_item_1line,
+                        dialerCandidates.map { it.name }
+                    )
+                )
+                binding.dialerProxyField.showSuggestionsOnTap()
+            }
+
             binding.tlsSwitch.setOnCheckedChangeListener { _, _ ->
                 applyTypeVisibility()
             }
@@ -274,6 +295,8 @@ class ManualProxyFormDialog(
                     binding.wsPathField.setText(fromExtras["ws-path"])
                     binding.wsHostField.setText(fromExtras["ws-host"])
                 }
+
+                binding.dialerProxyField.setText(fromExtras["dialer-proxy"], false)
             } ?: run {
                 binding.cipherField.setText("aes-256-gcm", false)
                 binding.udpSwitch.isChecked = true

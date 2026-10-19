@@ -446,5 +446,6 @@
     <string name="manual_proxy_fingerprint">Client fingerprint (uTLS)</string>
     <string name="manual_proxy_ws_path">WebSocket path</string>
     <string name="manual_proxy_ws_host">WebSocket Host header</string>
+    <string name="manual_proxy_dialer_proxy">Dialer proxy (dialer-proxy)</string>
     <string name="manual_error_uuid_required">UUID is required</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.github.kr328.clash
 
+import com.github.kr328.clash.core.model.AllProxies
 import com.github.kr328.clash.core.model.ManualProxy
 import com.github.kr328.clash.design.ManualProxiesDesign
 import com.github.kr328.clash.design.R
@@ -50,10 +51,39 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
     }
 
     private suspend fun editProxy(design: ManualProxiesDesign, initial: ManualProxy?) {
-        val config = withClash { queryManualConfig() }
+        val config = withClash {
+            val manual = queryManualConfig()
+            manual to queryAllProxies()
+        }
+
+        val (manualConfig, allProxies) = config
+
         val existingNames = buildSet {
-            config.proxies.forEach { add(it.name.lowercase()) }
-            config.proxyGroups.forEach { add(it.name.lowercase()) }
+            manualConfig.proxies.forEach { add(it.name.lowercase()) }
+            manualConfig.proxyGroups.forEach { add(it.name.lowercase()) }
+        }
+
+        // dialer-proxy candidates: subscription groups/proxies + manual
+        // groups/proxies, deduped by name (case-insensitive), manual first.
+        // The chain target may be any proxy or group name.
+        val dialerCandidates = buildList {
+            val seen = mutableSetOf<String>()
+
+            manualConfig.proxyGroups.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type, isGroup = true))
+                }
+            }
+            manualConfig.proxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(AllProxies(name = it.name, type = it.type))
+                }
+            }
+            allProxies.forEach {
+                if (seen.add(it.name.lowercase())) {
+                    add(it)
+                }
+            }
         }
 
         val result = suspendCoroutine<ManualProxy?> { continuation ->
@@ -62,6 +92,7 @@ class ManualProxiesActivity : BaseActivity<ManualProxiesDesign>() {
                 SUGGESTED_CIPHERS,
                 initial,
                 existingNames,
+                dialerCandidates,
             ).show {
                 continuation.resume(it)
             }

@@ -355,5 +355,6 @@
     <string name="manual_proxy_fingerprint">客户端指纹（uTLS）</string>
     <string name="manual_proxy_ws_path">WebSocket 路径</string>
     <string name="manual_proxy_ws_host">WebSocket Host 头</string>
+    <string name="manual_proxy_dialer_proxy">前置代理（dialer-proxy）</string>
     <string name="manual_error_uuid_required">UUID 不能为空</string>
 </resources>

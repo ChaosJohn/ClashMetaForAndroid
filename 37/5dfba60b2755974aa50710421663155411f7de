@@ -1,0 +1,22 @@
+app/src/main/java/com/github/kr328/clash/ManualProxiesActivity.kt
+  h_baea9421f36f49 3,54-60,62-86,95
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualProxyFormDialog.kt
+  h_baea9421f36f49 7,12,33,77,170-173,176-178,264-274,298-299
+design/src/main/res/layout/dialog_manual_proxy_form.xml
+  h_baea9421f36f49 230-246
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 358
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 449
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "375dfba60b2755974aa50710421663155411f7de",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

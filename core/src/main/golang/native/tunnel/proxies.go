@@ -112,16 +112,16 @@ func QueryAllProxies() []Proxy {
 	return result
 }
 
-// QueryProxyNow returns what the main proxy group currently selects,
-// resolved through nested groups down to a concrete proxy. The main
-// group is the one named Proxy/Proxies/PROXY (case-insensitive), or the
-// first known group as a fallback. Returns "" when no group exists
-// (e.g. Direct mode or a plain node subscription).
-func QueryProxyNow() string {
+// resolveMainChain walks the main proxy group (the one named Proxy/Proxies,
+// case-insensitive, else the first known group) through nested groups down to
+// a concrete proxy. It returns the groups along the way (outermost first) and
+// the final concrete proxy. Returns nils when no group exists (e.g. Direct
+// mode or a plain node subscription).
+func resolveMainChain() ([]outboundgroup.ProxyGroup, C.Proxy) {
 	mode := tunnel.Mode()
 
 	if mode == tunnel.Direct {
-		return ""
+		return nil, nil
 	}
 
 	all := tunnel.Proxies()
@@ -165,33 +165,50 @@ func QueryProxyNow() string {
 	}
 
 	if groupName == "" {
-		return ""
+		return nil, nil
 	}
 
 	const maxDepth = 16
+
+	var groups []outboundgroup.ProxyGroup
 
 	current := groupName
 
 	for i := 0; i < maxDepth; i++ {
 		p := all[current]
 		if p == nil {
-			return ""
+			return groups, nil
 		}
 
 		g, ok := p.Adapter().(outboundgroup.ProxyGroup)
 		if !ok {
-			break
+			return groups, p
 		}
+
+		groups = append(groups, g)
 
 		now := g.Now()
 		if now == "" || now == current {
-			return ""
+			return groups, nil
 		}
 
 		current = now
 	}
 
-	return current
+	return groups, all[current]
+}
+
+// QueryProxyNow returns what the main proxy group currently selects,
+// resolved through nested groups down to a concrete proxy. Returns "" when
+// no group exists (e.g. Direct mode or a plain node subscription).
+func QueryProxyNow() string {
+	_, final := resolveMainChain()
+
+	if final == nil {
+		return ""
+	}
+
+	return final.Name()
 }
 
 func QueryProxyGroup(name string, sortMode SortMode, uiSubtitlePattern *regexp2.Regexp) *ProxyGroup {

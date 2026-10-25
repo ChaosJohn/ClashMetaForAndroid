@@ -121,6 +121,15 @@ object Clash {
         )
     }
 
+    /**
+     * The concrete node the main proxy group (Proxy/Proxies,
+     * case-insensitive, else the first group) currently selects, resolved
+     * through nested groups. Empty when there is no group or selection.
+     */
+    fun queryProxyNow(): String {
+        return Bridge.nativeQueryProxyNow() ?: ""
+    }
+
     fun queryGroup(name: String, sort: ProxySort): ProxyGroup {
         return Bridge.nativeQueryGroup(name, sort.name)
             ?.let { Json.Default.decodeFromString(ProxyGroup.serializer(), it) }

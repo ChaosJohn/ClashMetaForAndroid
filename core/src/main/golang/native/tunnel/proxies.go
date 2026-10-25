@@ -112,6 +112,88 @@ func QueryAllProxies() []Proxy {
 	return result
 }
 
+// QueryProxyNow returns what the main proxy group currently selects,
+// resolved through nested groups down to a concrete proxy. The main
+// group is the one named Proxy/Proxies/PROXY (case-insensitive), or the
+// first known group as a fallback. Returns "" when no group exists
+// (e.g. Direct mode or a plain node subscription).
+func QueryProxyNow() string {
+	mode := tunnel.Mode()
+
+	if mode == tunnel.Direct {
+		return ""
+	}
+
+	all := tunnel.Proxies()
+
+	var groupName string
+
+	// well-known main group names, matched case-insensitively
+	for name, p := range all {
+		if name == "GLOBAL" {
+			continue
+		}
+		if _, isGroup := p.Adapter().(outboundgroup.ProxyGroup); !isGroup {
+			continue
+		}
+
+		switch strings.ToLower(name) {
+		case "proxy", "proxies":
+			groupName = name
+		}
+
+		if groupName != "" {
+			break
+		}
+	}
+
+	if groupName == "" {
+		for name, p := range all {
+			if _, isGroup := p.Adapter().(outboundgroup.ProxyGroup); !isGroup {
+				continue
+			}
+			if name == "GLOBAL" {
+				continue
+			}
+
+			// no well-known main group: fall back to the first group
+			// (map order is random, but a single-group config is the
+			// common case here)
+			groupName = name
+			break
+		}
+	}
+
+	if groupName == "" {
+		return ""
+	}
+
+	const maxDepth = 16
+
+	current := groupName
+
+	for i := 0; i < maxDepth; i++ {
+		p := all[current]
+		if p == nil {
+			return ""
+		}
+
+		g, ok := p.Adapter().(outboundgroup.ProxyGroup)
+		if !ok {
+			break
+		}
+
+		now := g.Now()
+		if now == "" || now == current {
+			return ""
+		}
+
+		current = now
+	}
+
+	return current
+}
+
 func QueryProxyGroup(name string, sortMode SortMode, uiSubtitlePattern *regexp2.Regexp) *ProxyGroup {
 	p := tunnel.Proxies()[name]
 

@@ -47,6 +47,11 @@ func queryAllProxies() *C.char {
 	return marshalJson(tunnel.QueryAllProxies())
 }
 
+//export queryProxyNow
+func queryProxyNow() *C.char {
+	return C.CString(tunnel.QueryProxyNow())
+}
+
 //export queryGroup
 func queryGroup(name C.c_string, sortMode C.c_string) *C.char {
 	n := C.GoString(name)

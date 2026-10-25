@@ -52,7 +52,16 @@ class DynamicNotificationModule(service: Service) : Module<Unit>(service) {
         val uploaded = total.trafficUpload()
         val downloaded = total.trafficDownload()
 
+        val profile = StatusProvider.currentProfile
+        val proxyNow = Clash.queryProxyNow()
+        val title = when {
+            profile == null -> "Not selected"
+            proxyNow.isEmpty() -> profile
+            else -> "$profile - $proxyNow"
+        }
+
         val notification = builder
+            .setContentTitle(title)
             .setContentText(
                 service.getString(
                     R.string.clash_notification_content,
@@ -95,7 +104,15 @@ class DynamicNotificationModule(service: Service) : Module<Unit>(service) {
                     }
                 }
                 profileLoaded.onReceive {
-                    builder.setContentTitle(StatusProvider.currentProfile ?: "Not selected")
+                    val profile = StatusProvider.currentProfile
+                    val proxyNow = Clash.queryProxyNow()
+                    val title = when {
+                        profile == null -> "Not selected"
+                        proxyNow.isEmpty() -> profile
+                        else -> "$profile - $proxyNow"
+                    }
+
+                    builder.setContentTitle(title)
                 }
                 if (shouldUpdate) {
                     ticker.onReceive {

@@ -177,6 +177,18 @@ Java_com_github_kr328_clash_core_bridge_Bridge_nativeQueryAllProxies(JNIEnv *env
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeQueryProxyNow(JNIEnv *env, jobject thiz) {
+    TRACE_METHOD();
+
+    scoped_string response = queryProxyNow();
+
+    if (response == NULL)
+        return NULL;
+
+    return new_string(response);
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeQueryGroup(JNIEnv *env, jobject thiz,
                                                                 jstring name, jstring mode) {
     TRACE_METHOD();

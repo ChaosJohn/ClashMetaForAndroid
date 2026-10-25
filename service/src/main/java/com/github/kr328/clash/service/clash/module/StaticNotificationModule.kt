@@ -11,6 +11,7 @@ import com.github.kr328.clash.common.compat.pendingIntentFlags
 import com.github.kr328.clash.common.compat.startForegroundCompat
 import com.github.kr328.clash.common.constants.Components
 import com.github.kr328.clash.common.constants.Intents
+import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.service.R
 import com.github.kr328.clash.service.StatusProvider
 import kotlinx.coroutines.channels.Channel
@@ -41,10 +42,16 @@ class StaticNotificationModule(service: Service) : Module<Unit>(service) {
         while (true) {
             loaded.receive()
 
-            val profileName = StatusProvider.currentProfile ?: "Not selected"
+            val profileName = StatusProvider.currentProfile
+            val proxyNow = Clash.queryProxyNow()
+            val title = when {
+                profileName == null -> "Not selected"
+                proxyNow.isEmpty() -> profileName
+                else -> "$profileName - $proxyNow"
+            }
 
             val notification = builder
-                .setContentTitle(profileName)
+                .setContentTitle(title)
                 .setContentText(service.getText(R.string.running))
                 .build()
 

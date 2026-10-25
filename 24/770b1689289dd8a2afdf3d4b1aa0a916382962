@@ -1,0 +1,26 @@
+core/src/main/cpp/main.c
+  h_baea9421f36f49 179-190
+core/src/main/golang/native/tunnel.go
+  h_baea9421f36f49 50-54
+core/src/main/golang/native/tunnel/proxies.go
+  h_baea9421f36f49 115-196
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 124-132
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 29
+service/src/main/java/com/github/kr328/clash/service/clash/module/DynamicNotificationModule.kt
+  h_baea9421f36f49 55-62,64,107-115
+service/src/main/java/com/github/kr328/clash/service/clash/module/StaticNotificationModule.kt
+  h_baea9421f36f49 14,45-51,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "24770b1689289dd8a2afdf3d4b1aa0a916382962",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

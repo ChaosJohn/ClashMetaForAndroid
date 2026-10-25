@@ -1,0 +1,22 @@
+app/src/main/java/com/github/kr328/clash/ManualRulesActivity.kt
+  h_baea9421f36f49 81-90,93
+design/src/main/java/com/github/kr328/clash/design/dialog/ManualRuleFormDialog.kt
+  h_baea9421f36f49 10,14-18,23,26-42,60-62,64-65,73-78,80-81,83-92,95-101
+design/src/main/res/layout/dialog_manual_rule_form.xml
+  h_baea9421f36f49 23-24,27,29-30,37-39,42-44,46-47,50-52,55,60,63
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 308-309
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 399-400
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2258ae612bef8104e81cc08702f561fc9a958082",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

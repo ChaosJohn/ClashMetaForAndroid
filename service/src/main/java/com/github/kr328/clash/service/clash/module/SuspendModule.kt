@@ -27,6 +27,14 @@ class SuspendModule(service: Service) : Module<Unit>(service) {
                     Intent.ACTION_SCREEN_ON -> {
                         Clash.suspendCore(false)
 
+                        // Refresh alive states of all proxy groups' providers.
+                        // With lazy providers, health checks are skipped while
+                        // untouched (e.g. idle or screen off), so fallback
+                        // groups can keep stale alive states and never
+                        // auto-switch. Forcing a health check on screen on
+                        // makes fallback groups pick a working node promptly.
+                        Clash.healthCheckAll()
+
                         Log.d("Clash resumed")
                     }
                     Intent.ACTION_SCREEN_OFF -> {

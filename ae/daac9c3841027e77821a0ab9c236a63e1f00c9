@@ -1,0 +1,16 @@
+core/src/main/golang/native/tunnel/connectivity.go
+  h_baea9421f36f49 4-5,7,10-11,17-60,92-164,166-169,171-182
+core/src/main/golang/native/tunnel/proxies.go
+  h_baea9421f36f49 115-120,124,168,173-174,180,185,188-189,192,198-211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aedaac9c3841027e77821a0ab9c236a63e1f00c9",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+core/src/main/cpp/main.c
+  h_baea9421f36f49 478-531
+core/src/main/golang/native/config.go
+  h_baea9421f36f49 111-160
+core/src/main/golang/native/config/manual.go
+  h_baea9421f36f49 191-194
+core/src/main/java/com/github/kr328/clash/core/Clash.kt
+  h_baea9421f36f49 358-464
+core/src/main/java/com/github/kr328/clash/core/bridge/Bridge.kt
+  h_baea9421f36f49 64-74
+core/src/main/java/com/github/kr328/clash/core/model/ManualImportPreview.kt
+  h_baea9421f36f49 1-81
+service/src/main/java/com/github/kr328/clash/service/ClashManager.kt
+  h_baea9421f36f49 15,92-133
+service/src/main/java/com/github/kr328/clash/service/remote/IClashManager.kt
+  h_baea9421f36f49 30-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9dca87f1f7e9e145fdea6205ed419c616dc6292d",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

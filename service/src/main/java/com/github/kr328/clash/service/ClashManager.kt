@@ -12,6 +12,7 @@ import com.github.kr328.clash.service.store.ServiceStore
 import com.github.kr328.clash.service.util.sendOverrideChanged
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.serialization.json.Json
 
 class ClashManager(private val context: Context) : IClashManager,
     CoroutineScope by CoroutineScope(Dispatchers.IO) {
@@ -86,6 +87,48 @@ class ClashManager(private val context: Context) : IClashManager,
         Clash.clearManualConfig()
 
         context.sendOverrideChanged()
+    }
+
+    override fun exportManualYAML(configuration: ManualConfig): String {
+        val (error, yaml) = Clash.exportManualYAML(configuration)
+
+        error?.let { throw IllegalArgumentException(it) }
+
+        return yaml ?: ""
+    }
+
+    override fun parseManualImport(text: String): String {
+        val (error, config) = Clash.parseManualImport(text)
+
+        error?.let { throw IllegalArgumentException(it) }
+
+        return config?.let {
+            // re-encode through the typed model so the AIDL boundary only
+            // ever sees normalized documents
+            Json.encodeToString(ManualConfig.serializer(), it)
+        } ?: "{}"
+    }
+
+    override fun encodeManualQrPayload(configuration: ManualConfig): String {
+        val (error, uri) = Clash.encodeManualQrPayload(configuration)
+
+        error?.let { throw IllegalArgumentException(it) }
+
+        return uri ?: ""
+    }
+
+    override fun sanitizeManualImport(
+        draft: ManualConfig,
+        local: ManualConfig,
+        subProxies: List<Map<String, String>>,
+        subGroups: List<Map<String, String>>
+    ): ManualImportPreview? {
+        val proxies = subProxies.mapNotNull { it["name"] }
+            .map { AllProxies(name = it) }
+
+        val groups = subGroups.mapNotNull { it["name"] }
+
+        return Clash.sanitizeManualImport(draft, local, proxies, groups)
     }
 
     override fun queryGroupOverrides(profileId: String): Map<String, Map<String, String>> {

@@ -476,6 +476,60 @@ Java_com_github_kr328_clash_core_bridge_Bridge_nativeWriteProxyOverrides(JNIEnv 
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeExportManualYAML(JNIEnv *env, jobject thiz,
+                                                                      jstring content) {
+    TRACE_METHOD();
+
+    scoped_string _content = get_string(content);
+
+    scoped_string response = exportManualYAML(_content);
+
+    return new_string(response);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeParseManualImport(JNIEnv *env, jobject thiz,
+                                                                       jstring content) {
+    TRACE_METHOD();
+
+    scoped_string _content = get_string(content);
+
+    scoped_string response = parseManualImport(_content);
+
+    return new_string(response);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeEncodeManualQrPayload(JNIEnv *env, jobject thiz,
+                                                                           jstring content) {
+    TRACE_METHOD();
+
+    scoped_string _content = get_string(content);
+
+    scoped_string response = encodeManualQrPayload(_content);
+
+    return new_string(response);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeSanitizeManualImport(JNIEnv *env, jobject thiz,
+                                                                          jstring content,
+                                                                          jstring local,
+                                                                          jstring sub_proxies,
+                                                                          jstring sub_groups) {
+    TRACE_METHOD();
+
+    scoped_string _content = get_string(content);
+    scoped_string _local = get_string(local);
+    scoped_string _sub_proxies = get_string(sub_proxies);
+    scoped_string _sub_groups = get_string(sub_groups);
+
+    scoped_string response = sanitizeManualImport(_content, _local, _sub_proxies, _sub_groups);
+
+    return new_string(response);
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeQueryConfiguration(JNIEnv *env, jobject thiz) {
     TRACE_METHOD();
 

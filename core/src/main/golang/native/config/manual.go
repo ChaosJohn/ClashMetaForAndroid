@@ -188,6 +188,10 @@ func patchManualConfig(cfg *config.RawConfig, _ string) error {
 
 	// merge proxy groups
 	if len(manual.ProxyGroup) > 0 {
+		// the manual group form stores tuning options (url, interval, ...)
+		// in a nested map; mihomo expects them as plain mapping keys
+		manual.ProxyGroup = expandGroupOptions(manual.ProxyGroup)
+
 		for _, g := range manual.ProxyGroup {
 			if n := nameOfMapping(g); n != "" {
 				manualGroupNames[n] = true

@@ -27,6 +27,16 @@ interface IClashManager {
     fun patchManualConfig(configuration: ManualConfig)
     fun clearManualConfig()
 
+    fun exportManualYAML(configuration: ManualConfig): String
+    fun parseManualImport(text: String): String
+    fun encodeManualQrPayload(configuration: ManualConfig): String
+    fun sanitizeManualImport(
+        draft: ManualConfig,
+        local: ManualConfig,
+        subProxies: List<Map<String, String>>,
+        subGroups: List<Map<String, String>>
+    ): ManualImportPreview?
+
     fun queryGroupOverrides(profileId: String): Map<String, Map<String, String>>
     fun patchGroupOverrides(profileId: String, overrides: Map<String, Map<String, String>>)
 

@@ -61,6 +61,17 @@ object Bridge {
     external fun nativeReadProxyOverrides(profileId: String): String
     external fun nativeWriteProxyOverrides(profileId: String, content: String)
 
+    // Manual config exchange: all return JSON envelopes, see core manualio.go
+    external fun nativeExportManualYAML(content: String): String
+    external fun nativeParseManualImport(content: String): String
+    external fun nativeEncodeManualQrPayload(content: String): String
+    external fun nativeSanitizeManualImport(
+        content: String,
+        local: String,
+        subProxies: String,
+        subGroups: String
+    ): String
+
     external fun nativeQueryConfiguration(): String
     external fun nativeSubscribeLogcat(callback: LogcatInterface)
     external fun nativeCoreVersion(): String

@@ -108,6 +108,56 @@ func writeProxyOverrides(profileID, content C.c_string) {
 	config.WriteProxyOverrides(C.GoString(profileID), C.GoString(content))
 }
 
+// manualExchangeDoc is the uniform JSON envelope for the manual config
+// exchange exports: exactly one of the fields is set. `error` carries a
+// human-readable message when the operation failed.
+type manualExchangeDoc struct {
+	Error  string `json:"error,omitempty"`
+	YAML   string `json:"yaml,omitempty"`
+	Config string `json:"config,omitempty"`
+	URI    string `json:"uri,omitempty"`
+}
+
+//export exportManualYAML
+func exportManualYAML(content C.c_string) *C.char {
+	yaml, err := config.ExportManualYAML(C.GoString(content))
+	if err != nil {
+		return marshalJson(manualExchangeDoc{Error: err.Error()})
+	}
+
+	return marshalJson(manualExchangeDoc{YAML: yaml})
+}
+
+//export parseManualImport
+func parseManualImport(content C.c_string) *C.char {
+	normalized, err := config.ParseManualImport(C.GoString(content))
+	if err != nil {
+		return marshalJson(manualExchangeDoc{Error: err.Error()})
+	}
+
+	return marshalJson(manualExchangeDoc{Config: normalized})
+}
+
+//export encodeManualQrPayload
+func encodeManualQrPayload(content C.c_string) *C.char {
+	uri, err := config.EncodeManualQrPayload(C.GoString(content))
+	if err != nil {
+		return marshalJson(manualExchangeDoc{Error: err.Error()})
+	}
+
+	return marshalJson(manualExchangeDoc{URI: uri})
+}
+
+//export sanitizeManualImport
+func sanitizeManualImport(content, local, subProxies, subGroups C.c_string) *C.char {
+	return C.CString(config.SanitizeManualImport(
+		C.GoString(content),
+		C.GoString(local),
+		C.GoString(subProxies),
+		C.GoString(subGroups),
+	))
+}
+
 //export setAgeSecretKey
 func setAgeSecretKey(key C.c_string) {
 	if key == nil {

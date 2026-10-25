@@ -355,4 +355,110 @@ object Clash {
     private fun parseAgeKeyPair(value: String): AgeKeyPair {
         return Json.Default.decodeFromString(AgeKeyPair.serializer(), value)
     }
+
+    // ------------------------------------------------------------------
+    // Manual config exchange (export/import), backed by native manualio.go.
+    // Export bridge calls return a JSON envelope with exactly one field
+    // set: error / yaml / config / uri.
+    // ------------------------------------------------------------------
+
+    private val ManualExchangeJson = Json {
+        ignoreUnknownKeys = true
+    }
+
+    data class ManualExchangeResult<out T>(val error: String?, val value: T?)
+
+    /**
+     * Renders the given manual config as a mihomo-style YAML snippet for
+     * file export.
+     */
+    fun exportManualYAML(configuration: ManualConfig): ManualExchangeResult<String> {
+        val raw = Bridge.nativeExportManualYAML(
+            ManualConfigJson.encodeToString(ManualConfig.serializer(), configuration)
+        )
+
+        val envelope = ManualExchangeJson.decodeFromString(ExchangeEnvelope.serializer(), raw)
+
+        return ManualExchangeResult(envelope.error, envelope.yaml)
+    }
+
+    /**
+     * Normalizes external input (YAML snippet or cmfa://manual QR URI) into
+     * a ManualConfig draft.
+     */
+    fun parseManualImport(text: String): ManualExchangeResult<ManualConfig> {
+        val raw = Bridge.nativeParseManualImport(text)
+
+        val envelope = ManualExchangeJson.decodeFromString(ExchangeEnvelope.serializer(), raw)
+
+        val config = envelope.config?.let {
+            ManualConfigJson.decodeFromString(ManualConfig.serializer(), it)
+        }
+
+        return ManualExchangeResult(envelope.error, config)
+    }
+
+    /**
+     * Builds the cmfa://manual share URI for QR display. Fails when the
+     * config is empty or exceeds the QR size cap.
+     */
+    fun encodeManualQrPayload(configuration: ManualConfig): ManualExchangeResult<String> {
+        val raw = Bridge.nativeEncodeManualQrPayload(
+            ManualConfigJson.encodeToString(ManualConfig.serializer(), configuration)
+        )
+
+        val envelope = ManualExchangeJson.decodeFromString(ExchangeEnvelope.serializer(), raw)
+
+        return ManualExchangeResult(envelope.error, envelope.uri)
+    }
+
+    /**
+     * Validates an import package against the local manual config and the
+     * current subscription proxies/groups. Returns the preview document
+     * (items, warnings, dropped count) including the sanitized package, or
+     * null when the native side rejects the input.
+     */
+    fun sanitizeManualImport(
+        draft: ManualConfig,
+        local: ManualConfig,
+        subProxies: List<AllProxies>,
+        subGroups: List<String>
+    ): ManualImportPreview? {
+        // Go reads [{name: ...}] arrays for both lists; name is the only
+        // field the sanitizer consumes.
+        val subProxyJson = ManualConfigJson.encodeToString(
+            ListSerializer(MapSerializer(String.serializer(), String.serializer())),
+            subProxies.map { mapOf("name" to it.name) }
+        )
+
+        val subGroupJson = ManualConfigJson.encodeToString(
+            ListSerializer(MapSerializer(String.serializer(), String.serializer())),
+            subGroups.map { mapOf("name" to it) }
+        )
+
+        val raw = Bridge.nativeSanitizeManualImport(
+            ManualConfigJson.encodeToString(ManualConfig.serializer(), draft),
+            ManualConfigJson.encodeToString(ManualConfig.serializer(), local),
+            subProxyJson,
+            subGroupJson
+        )
+
+        val envelope = ManualExchangeJson.decodeFromString(SanitizeEnvelope.serializer(), raw)
+
+        return envelope.result
+    }
 }
+
+@kotlinx.serialization.Serializable
+private data class ExchangeEnvelope(
+    val error: String? = null,
+    val yaml: String? = null,
+    val config: String? = null,
+    val uri: String? = null,
+)
+
+@kotlinx.serialization.Serializable
+private data class SanitizeEnvelope(
+    val result: ManualImportPreview? = null,
+    val error: String? = null,
+)

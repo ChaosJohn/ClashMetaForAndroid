@@ -1,0 +1,14 @@
+service/src/main/java/com/github/kr328/clash/service/clash/module/SuspendModule.kt
+  h_baea9421f36f49 30-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd173d3f35a6967c15088bec76ecb9b709aaf58e",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

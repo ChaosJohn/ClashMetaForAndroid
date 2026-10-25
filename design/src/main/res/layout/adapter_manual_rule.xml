@@ -90,7 +90,7 @@
                     android:layout_height="@dimen/item_tailing_component_size"
                     android:layout_margin="@dimen/item_tailing_margin"
                     android:background="@drawable/ic_baseline_expand_less"
-                    android:rotation="90" />
+                    android:rotation="0" />
             </FrameLayout>
 
             <FrameLayout
@@ -107,7 +107,7 @@
                     android:layout_height="@dimen/item_tailing_component_size"
                     android:layout_margin="@dimen/item_tailing_margin"
                     android:background="@drawable/ic_baseline_expand_less"
-                    android:rotation="270" />
+                    android:rotation="180" />
             </FrameLayout>
         </LinearLayout>
 

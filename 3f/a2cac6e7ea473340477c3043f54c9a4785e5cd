@@ -1,0 +1,14 @@
+docs/design/manual-config-import-export.md
+  h_baea9421f36f49 1-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3fa2cac6e7ea473340477c3043f54c9a4785e5cd",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

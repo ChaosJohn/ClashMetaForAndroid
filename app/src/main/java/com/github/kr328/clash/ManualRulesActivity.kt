@@ -78,9 +78,19 @@ class ManualRulesActivity : BaseActivity<ManualRulesDesign>() {
 
     private suspend fun editRule(design: ManualRulesDesign, initial: ManualRule?, index: Int) {
         val groups = loadConfig().proxyGroups
+        val policies =
+            try {
+                withClash {
+                    queryAllProxies()
+                        .map { it.name }
+                        .filterNot { it.equals("GLOBAL", ignoreCase = true) }
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
 
         val result = suspendCoroutine<ManualRule?> { continuation ->
-            ManualRuleFormDialog(this, groups, initial).show {
+            ManualRuleFormDialog(this, groups, policies, initial).show {
                 continuation.resume(it)
             }
         } ?: return

@@ -305,7 +305,8 @@
     <string name="manual_proxy_udp">UDP</string>
     <string name="manual_group_name">策略组名称</string>
     <string name="manual_group_proxies">成员（手动节点）</string>
-    <string name="manual_rule_content">规则内容（如 DOMAIN-SUFFIX,google.com 或 GEOIP,CN）</string>
+    <string name="manual_rule_type">规则类型</string>
+    <string name="manual_rule_content">匹配值（如 google.com；GEOIP 填 CN；PROCESS-NAME 填包名）</string>
     <string name="manual_rule_target">目标策略</string>
     <string name="manual_rule_target_direct">DIRECT（直连）</string>
     <string name="manual_rule_target_reject">REJECT（拒绝）</string>

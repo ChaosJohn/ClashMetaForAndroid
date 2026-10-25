@@ -396,7 +396,8 @@
     <string name="manual_proxy_udp">UDP</string>
     <string name="manual_group_name">Group name</string>
     <string name="manual_group_proxies">Members (manual proxies)</string>
-    <string name="manual_rule_content">Rule content (e.g. DOMAIN-SUFFIX,google.com or GEOIP,CN)</string>
+    <string name="manual_rule_type">Rule type</string>
+    <string name="manual_rule_content">Match value (e.g. google.com, GEOIP matched value is like CN, PROCESS-NAME is like com.example.app)</string>
     <string name="manual_rule_target">Target policy</string>
     <string name="manual_rule_target_direct">DIRECT</string>
     <string name="manual_rule_target_reject">REJECT</string>

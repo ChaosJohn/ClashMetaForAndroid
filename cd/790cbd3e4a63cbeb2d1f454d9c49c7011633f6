@@ -1,0 +1,16 @@
+core/src/main/golang/native/config/manualio.go
+  h_baea9421f36f49 1-724
+core/src/main/golang/native/config/manualio_test.go
+  h_baea9421f36f49 1-298
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cd790cbd3e4a63cbeb2d1f454d9c49c7011633f6",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

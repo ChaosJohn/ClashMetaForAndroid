@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="preview"
+            type="com.github.kr328.clash.core.model.ManualImportPreview" />
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_padding">
+
+        <TextView
+            android:id="@+id/summary_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/manual_proxies"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:visibility="@{preview.proxies.empty ? View.GONE : View.VISIBLE}" />
+
+                <LinearLayout
+                    android:id="@+id/proxies_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/manual_proxy_groups"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:visibility="@{preview.proxyGroups.empty ? View.GONE : View.VISIBLE}" />
+
+                <LinearLayout
+                    android:id="@+id/groups_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/manual_rules"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:visibility="@{preview.rules.empty ? View.GONE : View.VISIBLE}" />
+
+                <LinearLayout
+                    android:id="@+id/rules_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/warnings_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="?attr/colorError"
+            android:visibility="gone"
+            tools:visibility="visible"
+            xmlns:tools="http://schemas.android.com/tools" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/manual_import_credential_warning"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+    </LinearLayout>
+</layout>

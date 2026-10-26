@@ -12,6 +12,8 @@ import com.github.kr328.clash.design.adapter.ProfileAdapter
 import com.github.kr328.clash.design.databinding.DesignProfilesBinding
 import com.github.kr328.clash.design.databinding.DialogProfilesMenuBinding
 import com.github.kr328.clash.design.databinding.DialogManualConfigMenuBinding
+import com.github.kr328.clash.design.databinding.DialogManualExportBinding
+import com.github.kr328.clash.design.databinding.DialogManualImportBinding
 import com.github.kr328.clash.design.databinding.DialogProfileQrCodeBinding
 import com.github.kr328.clash.design.dialog.AppBottomSheetDialog
 import com.github.kr328.clash.design.ui.ToastDuration
@@ -41,6 +43,14 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
         object ManualProxies : Request()
         object ManualProxyGroups : Request()
         object ManualRules : Request()
+        object ManualImport : Request()
+        object ManualExport : Request()
+        object ManualImportQr : Request()
+        object ManualImportImage : Request()
+        object ManualImportFile : Request()
+        object ManualExportFile : Request()
+        object ManualExportQr : Request()
+        object ManualExportLink : Request()
     }
 
     private val binding = DesignProfilesBinding
@@ -138,6 +148,79 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
         dialog.dismiss()
 
         requests.trySend(Request.ManualRules)
+    }
+
+    fun requestManualImport(dialog: Dialog) {
+        dialog.dismiss()
+
+        showManualImportMenu()
+    }
+
+    fun requestManualExport(dialog: Dialog) {
+        dialog.dismiss()
+
+        showManualExportMenu()
+    }
+
+    fun showManualImportMenu() {
+        val dialog = AppBottomSheetDialog(context)
+        val binding = DialogManualImportBinding
+            .inflate(context.layoutInflater, dialog.window?.decorView as ViewGroup, false)
+
+        binding.master = this
+        binding.self = dialog
+
+        dialog.setContentView(binding.root)
+        dialog.show()
+    }
+
+    fun showManualExportMenu() {
+        val dialog = AppBottomSheetDialog(context)
+
+        val binding = DialogManualExportBinding
+            .inflate(context.layoutInflater, dialog.window?.decorView as ViewGroup, false)
+
+        binding.master = this
+        binding.self = dialog
+
+        dialog.setContentView(binding.root)
+        dialog.show()
+    }
+
+    fun requestManualImportQr(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualImportQr)
+    }
+
+    fun requestManualImportImage(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualImportImage)
+    }
+
+    fun requestManualImportFile(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualImportFile)
+    }
+
+    fun requestManualExportFile(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualExportFile)
+    }
+
+    fun requestManualExportQr(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualExportQr)
+    }
+
+    fun requestManualExportLink(dialog: Dialog) {
+        dialog.dismiss()
+
+        requests.trySend(Request.ManualExportLink)
     }
 
     fun requestUpdateAll() {

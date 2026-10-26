@@ -55,5 +55,23 @@
             app:icon="@drawable/ic_baseline_rule"
             app:subtext="@string/manual_rules_summary"
             app:text="@string/manual_rules" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> master.requestManualImport(self)}"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/ic_baseline_get_app"
+            app:subtext="@string/manual_import_summary"
+            app:text="@string/manual_import" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> master.requestManualExport(self)}"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/ic_baseline_publish"
+            app:subtext="@string/manual_export_summary"
+            app:text="@string/manual_export" />
     </LinearLayout>
 </layout>

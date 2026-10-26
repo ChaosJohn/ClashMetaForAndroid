@@ -452,4 +452,37 @@
     <string name="manual_clear_value">(clear)</string>
     <string name="proxy_dialer_override_title">Dialer proxy of %1$s</string>
     <string name="manual_error_uuid_required">UUID is required</string>
+
+    <string name="manual_import">Import Manual Config</string>
+    <string name="manual_import_summary">From a QR code or a YAML file</string>
+    <string name="manual_export">Export Manual Config</string>
+    <string name="manual_export_summary">Share as file, QR code or link</string>
+    <string name="manual_import_from_qr">Scan QR Code</string>
+    <string name="manual_import_from_qr_summary">Scan with the camera</string>
+    <string name="manual_import_from_image">Pick from Gallery</string>
+    <string name="manual_import_from_image_summary">Decode a QR code from a picture</string>
+    <string name="manual_import_from_file">Import from File</string>
+    <string name="manual_import_from_file_summary">Pick a YAML file (.yaml)</string>
+    <string name="manual_export_to_file">Export to File</string>
+    <string name="manual_export_to_file_summary">Save as a mihomo YAML snippet</string>
+    <string name="manual_export_qr">Show QR Code</string>
+    <string name="manual_export_qr_summary">Let the other device scan it</string>
+    <string name="manual_export_link">Share Link</string>
+    <string name="manual_export_link_summary">Send the cmfa:// link via any app</string>
+    <string name="manual_qr_contains_credentials">The QR code and the link contain proxy credentials. Only share them with people you trust.</string>
+    <string name="manual_export_qr_oversize">Config too large for a QR code, use file export instead</string>
+    <string name="manual_export_empty">Manual config is empty</string>
+    <string name="manual_import_preview_title">Import Preview</string>
+    <string name="manual_import_preview_summary">%1$d proxies, %2$d groups, %3$d rules</string>
+    <string name="manual_import_no_entries">The import package contains no entries</string>
+    <string name="manual_import_replace">Replace</string>
+    <string name="manual_import_replace_summary">Discard current manual config, then import</string>
+    <string name="manual_import_merge">Merge</string>
+    <string name="manual_import_merge_summary">Overwrite same-name entries, append the rest</string>
+    <string name="manual_import_parse_failed">Failed to parse the input: %1$s</string>
+    <string name="manual_import_applied">Manual config imported</string>
+    <string name="manual_import_empty_input">Nothing readable in the QR code</string>
+    <string name="manual_import_image_failed">No QR code found in the picture</string>
+    <string name="manual_import_credential_warning">Contains proxy credentials, handle with care.</string>
+    <string name="manual_export_saved">Manual config exported</string>
 </resources>

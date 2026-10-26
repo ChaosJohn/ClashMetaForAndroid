@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="master"
+            type="com.github.kr328.clash.design.ProfilesDesign" />
+        <variable
+            name="self"
+            type="android.app.Dialog" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/dialog_padding"
+            android:text="@string/manual_export"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> master.requestManualExportFile(self)}"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/ic_baseline_save"
+            app:subtext="@string/manual_export_to_file_summary"
+            app:text="@string/manual_export_to_file" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> master.requestManualExportQr(self)}"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/baseline_qr_code_scanner"
+            app:subtext="@string/manual_export_qr_summary"
+            app:text="@string/manual_export_qr" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> master.requestManualExportLink(self)}"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/ic_baseline_content_copy"
+            app:subtext="@string/manual_export_link_summary"
+            app:text="@string/manual_export_link" />
+    </LinearLayout>
+</layout>

@@ -361,4 +361,37 @@
     <string name="manual_clear_value">（清空）</string>
     <string name="proxy_dialer_override_title">%1$s 的前置代理</string>
     <string name="manual_error_uuid_required">UUID 不能为空</string>
+
+    <string name="manual_import">导入手动配置</string>
+    <string name="manual_import_summary">从二维码或 YAML 文件导入</string>
+    <string name="manual_export">导出手动配置</string>
+    <string name="manual_export_summary">以文件、二维码或链接分享</string>
+    <string name="manual_import_from_qr">扫描二维码</string>
+    <string name="manual_import_from_qr_summary">使用相机扫码</string>
+    <string name="manual_import_from_image">从相册识别</string>
+    <string name="manual_import_from_image_summary">解析图片中的二维码</string>
+    <string name="manual_import_from_file">从文件导入</string>
+    <string name="manual_import_from_file_summary">选择 YAML 文件（.yaml）</string>
+    <string name="manual_export_to_file">导出为文件</string>
+    <string name="manual_export_to_file_summary">保存为 mihomo YAML 片段</string>
+    <string name="manual_export_qr">显示二维码</string>
+    <string name="manual_export_qr_summary">供对方设备扫码</string>
+    <string name="manual_export_link">分享链接</string>
+    <string name="manual_export_link_summary">通过任意应用发送 cmfa:// 链接</string>
+    <string name="manual_qr_contains_credentials">二维码与链接中包含节点凭据，请仅分享给信任的人。</string>
+    <string name="manual_export_qr_oversize">配置过大，无法生成二维码，请改用文件导出</string>
+    <string name="manual_export_empty">手动配置为空</string>
+    <string name="manual_import_preview_title">导入预览</string>
+    <string name="manual_import_preview_summary">%1$d 个节点、%2$d 个策略组、%3$d 条规则</string>
+    <string name="manual_import_no_entries">导入包不包含任何条目</string>
+    <string name="manual_import_replace">替换</string>
+    <string name="manual_import_replace_summary">清空当前手动配置后导入</string>
+    <string name="manual_import_merge">合并</string>
+    <string name="manual_import_merge_summary">同名条目覆盖，其余追加</string>
+    <string name="manual_import_parse_failed">解析失败：%1$s</string>
+    <string name="manual_import_applied">手动配置已导入</string>
+    <string name="manual_import_empty_input">二维码中没有可识别内容</string>
+    <string name="manual_import_image_failed">图片中未找到二维码</string>
+    <string name="manual_import_credential_warning">包含节点凭据，请谨慎处理。</string>
+    <string name="manual_export_saved">手动配置已导出</string>
 </resources>

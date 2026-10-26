@@ -1,0 +1,18 @@
+app/src/main/AndroidManifest.xml
+  h_baea9421f36f49 115-130
+app/src/main/java/com/github/kr328/clash/ManualImportActivity.kt
+  h_baea9421f36f49 1-37
+app/src/main/java/com/github/kr328/clash/ProfilesActivity.kt
+  h_baea9421f36f49 40-43,69-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6396cf7dbbf7a69c338db2c81891fde22f8e7591",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

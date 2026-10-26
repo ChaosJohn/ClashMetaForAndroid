@@ -37,6 +37,10 @@ import java.util.concurrent.TimeUnit
 import com.github.kr328.clash.design.R
 
 class ProfilesActivity : BaseActivity<ProfilesDesign>() {
+    companion object {
+        const val EXTRA_MANUAL_IMPORT_TEXT = "extra:manual_import_text"
+    }
+
     private val scanLauncher =
         registerForActivityResult(ScanQRCode(), ::scanResultHandler)
 
@@ -61,6 +65,15 @@ class ProfilesActivity : BaseActivity<ProfilesDesign>() {
         val design = ProfilesDesign(this)
 
         setContentDesign(design)
+
+        // Deep-link import: cmfa://manual payload forwarded by
+        // ManualImportActivity.
+        if (intent?.getStringExtra(EXTRA_MANUAL_IMPORT_TEXT)?.takeIf { it.isNotBlank() } != null) {
+            val text = intent.getStringExtra(EXTRA_MANUAL_IMPORT_TEXT)!!
+            intent.removeExtra(EXTRA_MANUAL_IMPORT_TEXT)
+
+            importManualConfig(design, text)
+        }
 
         val ticker = ticker(TimeUnit.MINUTES.toMillis(1))
 

@@ -113,6 +113,22 @@
             android:label="@string/application_crashed"
             android:launchMode="singleTask" />
         <activity
+            android:name=".ManualImportActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/manual_import"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="cmfa" android:host="manual" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ProfilesActivity"
             android:configChanges="uiMode"
             android:exported="false"

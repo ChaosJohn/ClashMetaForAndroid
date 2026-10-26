@@ -1,0 +1,32 @@
+design/src/main/java/com/github/kr328/clash/design/ManualImportDialogs.kt
+  h_baea9421f36f49 1-130
+design/src/main/java/com/github/kr328/clash/design/ManualQrDialogs.kt
+  h_baea9421f36f49 1-104
+design/src/main/java/com/github/kr328/clash/design/ProfilesDesign.kt
+  h_baea9421f36f49 15-16,46-53,153-225
+design/src/main/res/layout/dialog_manual_config_menu.xml
+  h_baea9421f36f49 58-75
+design/src/main/res/layout/dialog_manual_export.xml
+  h_baea9421f36f49 1-52
+design/src/main/res/layout/dialog_manual_import.xml
+  h_baea9421f36f49 1-52
+design/src/main/res/layout/dialog_manual_import_preview.xml
+  h_baea9421f36f49 1-95
+design/src/main/res/layout/dialog_manual_qr.xml
+  h_baea9421f36f49 1-17
+design/src/main/res/values-zh/strings.xml
+  h_baea9421f36f49 364-396
+design/src/main/res/values/strings.xml
+  h_baea9421f36f49 455-487
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "de3cd53abf1b0b8840439bca797f89fcb64a0c77",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+app/src/main/java/com/github/kr328/clash/ProfilesActivity.kt
+  h_baea9421f36f49 4-5,9-11,13-17,19,21,23-28,34,40-59,124-156,168-438
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0433888da73b347de7e067ec300c9db67530da23",
+  "prompts": {},
+  "humans": {
+    "h_baea9421f36f49": {
+      "author": "Chaos John <chaosjohn.yjh@icloud.com>"
+    }
+  }
+}
